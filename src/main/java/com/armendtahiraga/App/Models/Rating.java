@@ -1,4 +1,6 @@
-package com.armendtahiraga.App;
+package com.armendtahiraga.App.Models;
+
+import java.time.Instant;
 
 public class Rating {
     private int ratingID;
@@ -7,6 +9,8 @@ public class Rating {
     private int stars;
     private String comment;
     private String timestamp;
+    public boolean confirmed;
+    public int likes;
 
     public Rating(int ratingID, int movieID, int userID, int stars, String comment, String timestamp) {
         this.ratingID = ratingID;
@@ -39,5 +43,13 @@ public class Rating {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public int getLikes() {
+        return likes;
     }
 }
