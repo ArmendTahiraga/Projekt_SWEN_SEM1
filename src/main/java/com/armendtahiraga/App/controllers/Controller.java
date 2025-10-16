@@ -1,9 +1,9 @@
 package com.armendtahiraga.App.controllers;
 
 import com.armendtahiraga.Server.ContentType;
-import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
+import com.google.gson.JsonObject;
 
 public abstract class Controller {
     protected Response ok() {
@@ -14,12 +14,16 @@ public abstract class Controller {
         return text(status.getMessage(), status);
     }
 
-    protected Response text(String text) {
-        return text(text, Status.OK);
-    }
-
     protected Response text(String text, Status status) {
         return response(status, ContentType.TEXT_PLAIN, text);
+    }
+
+    protected Response error(Status status, String message) {
+        return text("Error: " + (message == null || message.isEmpty() ? status.getMessage() : message), status);
+    }
+
+    protected Response json(Status status, String data) {
+        return response(status, ContentType.APPLICATION_JSON, data);
     }
 
     private Response response(Status status, ContentType contentType, String body) {

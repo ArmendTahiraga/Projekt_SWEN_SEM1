@@ -1,18 +1,76 @@
 package com.armendtahiraga.App.controllers;
 
+import com.armendtahiraga.App.models.User;
+import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class AuthController extends Controller{
+    private AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     public Response register(Request request) {
+        try{
+            if (request.getBody() == null || request.getBody().isEmpty()) {
+                return error(Status.BAD_REQUEST, "Request body is empty");
+            }
 
-        return text("registered", Status.OK);
+            JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
+
+            String username = body.get("username").getAsString();
+            String email = body.get("email").getAsString();
+            String password = body.get("password").getAsString();
+
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                return error(Status.BAD_REQUEST, "Missing username, email or password");
+            }
+
+            User createdUser = authService.register(username, email, password);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("id", createdUser.getUserID());
+            response.addProperty("username", createdUser.getUsername());
+            response.addProperty("token", createdUser.getToken());
+            response.addProperty("message", "User registered");
+
+            return json(Status.CREATED, response.toString());
+        } catch (Exception exception){
+            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
     }
 
     public Response login(Request request) {
+        try{
+            if (request.getBody() == null || request.getBody().isEmpty()) {
+                return error(Status.BAD_REQUEST, "Request body is empty");
+            }
 
-        return text("logged in", Status.OK);
+            JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
+
+            String username = body.get("username").getAsString();
+            String password = body.get("password").getAsString();
+
+            if (username.isEmpty() || password.isEmpty()) {
+                return error(Status.BAD_REQUEST, "Missing username or password");
+            }
+
+            User user = authService.login(username, password);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("id", user.getUserID());
+            response.addProperty("username", user.getUsername());
+            response.addProperty("token", user.getToken());
+            response.addProperty("message", "Login successful");
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception) {
+            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
     }
 }

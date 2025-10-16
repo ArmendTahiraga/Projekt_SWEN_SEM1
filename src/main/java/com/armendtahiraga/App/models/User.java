@@ -10,6 +10,7 @@ public class User {
     private String favoriteGenre;
     private List<Media> favoriteMedia;
     private List<String> recommendations;
+    private String token;
 
     public User(int userID, String username, String passwordHash, String email, String favoriteGenre, List<Media> favoriteMedia, List<String> recommendations) {
         this.userID = userID;
@@ -47,5 +48,13 @@ public class User {
 
     public List<String> getRecommendations() {
         return recommendations;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

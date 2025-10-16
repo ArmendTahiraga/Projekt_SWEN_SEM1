@@ -1,6 +1,7 @@
 package com.armendtahiraga.App;
 
 import com.armendtahiraga.App.controllers.AuthController;
+import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.Server.ContentType;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
@@ -9,10 +10,13 @@ import com.armendtahiraga.Server.Status;
 public class MRPApplication implements Application {
     private Router router;
     private AuthController authController;
+    private AuthService authService;
 
     public MRPApplication(){
         this.router = new Router();
-        this.authController = new AuthController();
+        this.authService = new AuthService();
+
+        this.authController = new AuthController(authService);
 
         createRoutes();
     }
