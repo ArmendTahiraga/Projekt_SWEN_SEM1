@@ -1,6 +1,5 @@
 package com.armendtahiraga.App;
 
-
 public class Route {
     private final String method;
     private final String path;

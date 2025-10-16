@@ -1,6 +1,8 @@
 package com.armendtahiraga.App;
 
 import com.armendtahiraga.App.controllers.AuthController;
+import com.armendtahiraga.App.database.Database;
+import com.armendtahiraga.App.repository.UserRepository;
 import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.Server.ContentType;
 import com.armendtahiraga.Server.Request;
@@ -9,12 +11,17 @@ import com.armendtahiraga.Server.Status;
 
 public class MRPApplication implements Application {
     private Router router;
+    private UserRepository userRepository;
     private AuthController authController;
     private AuthService authService;
 
     public MRPApplication(){
+        Database.connect();
         this.router = new Router();
-        this.authService = new AuthService();
+
+        this.userRepository = new UserRepository();
+
+        this.authService = new AuthService(userRepository);
 
         this.authController = new AuthController(authService);
 

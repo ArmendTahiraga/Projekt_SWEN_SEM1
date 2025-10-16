@@ -1,6 +1,5 @@
 package com.armendtahiraga.App;
 
-import com.armendtahiraga.App.controllers.Controller;
 import com.armendtahiraga.Server.Request;
 
 import java.util.ArrayList;

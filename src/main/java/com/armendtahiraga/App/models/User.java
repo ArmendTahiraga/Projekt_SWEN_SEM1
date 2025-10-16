@@ -8,18 +8,15 @@ public class User {
     private String passwordHash;
     private String email;
     private String favoriteGenre;
-    private List<Media> favoriteMedia;
+    private List<Media> favoriteMedias;
     private List<String> recommendations;
     private String token;
 
-    public User(int userID, String username, String passwordHash, String email, String favoriteGenre, List<Media> favoriteMedia, List<String> recommendations) {
+    public User(int userID, String username, String passwordHash, String email) {
         this.userID = userID;
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
-        this.favoriteGenre = favoriteGenre;
-        this.favoriteMedia = favoriteMedia;
-        this.recommendations = recommendations;
     }
 
     public int getUserID() {
@@ -42,8 +39,8 @@ public class User {
         return favoriteGenre;
     }
 
-    public List<Media> getFavoriteMovies() {
-        return favoriteMedia;
+    public List<Media> getFavoriteMedias() {
+        return favoriteMedias;
     }
 
     public List<String> getRecommendations() {
@@ -56,5 +53,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setFavoriteGenre(String favoriteGenre) {
+        this.favoriteGenre = favoriteGenre;
+    }
+
+    public void setFavoriteMedias(List<Media> favoriteMedias) {
+        this.favoriteMedias = favoriteMedias;
     }
 }
