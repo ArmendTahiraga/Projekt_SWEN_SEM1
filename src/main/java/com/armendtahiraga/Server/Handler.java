@@ -23,10 +23,6 @@ public class Handler implements HttpHandler {
         Request request = requestMapper.fromExchange(exchange);
         Response response = application.handleRequest(request);
         send(exchange, response);
-        // create Request object
-        // give Request to Application
-        // receive Response object
-        // send Response to client
     }
 
     public void send(HttpExchange exchange, Response response) throws IOException {

@@ -1,19 +1,26 @@
 package com.armendtahiraga.App;
 
-public class Route {
-    private final String path;
-    private final Controller controller;
 
-    public Route(String path, Controller controller) {
+public class Route {
+    private final String method;
+    private final String path;
+    private final Endpoint endpoint;
+
+    public Route(String method, String path, Endpoint endpoint) {
+        this.method = method;
         this.path = path;
-        this.controller = controller;
+        this.endpoint = endpoint;
+    }
+
+    public String getMethod() {
+        return method;
     }
 
     public String getPath() {
         return path;
     }
 
-    public Controller getController() {
-        return controller;
+    public Endpoint getEndpoint() {
+        return endpoint;
     }
 }

@@ -1,4 +1,4 @@
-package com.armendtahiraga.App;
+package com.armendtahiraga.App.controllers;
 
 import com.armendtahiraga.Server.ContentType;
 import com.armendtahiraga.Server.Request;
@@ -6,11 +6,6 @@ import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
 
 public abstract class Controller {
-    //Bekommt user daten von request und erstellt user objekt
-    //User modifizieren und löschen
-
-    public abstract Response handle(Request request);
-
     protected Response ok() {
         return status(Status.OK);
     }

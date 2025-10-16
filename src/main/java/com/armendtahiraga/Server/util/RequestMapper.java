@@ -14,14 +14,14 @@ public class RequestMapper {
         request.setMethod(exchange.getRequestMethod());
         request.setPath(exchange.getRequestURI().getPath());
 
-        InputStream is = exchange.getRequestBody();
+        InputStream inputStream = exchange.getRequestBody();
 
-        if (is == null) {
+        if (inputStream == null) {
             return request;
         }
 
-        byte[] buf = is.readAllBytes();
-        request.setBody(new String(buf, StandardCharsets.UTF_8));
+        byte[] body = inputStream.readAllBytes();
+        request.setBody(new String(body, StandardCharsets.UTF_8));
 
         return request;
     }
