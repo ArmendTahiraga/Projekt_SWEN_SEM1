@@ -1,5 +1,6 @@
 package com.armendtahiraga.App.services;
 
+import com.armendtahiraga.App.MRPApplication;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -16,20 +17,25 @@ public class AuthService {
 
     public User register(String username, String email, String password){
         try {
+            System.out.println("Registering user: " + username + ", " + email);
             if (userRepository.findByUsername(username).isPresent()) {
+                System.out.println("Username already taken: " + username);
                 throw new IllegalArgumentException("Username already taken");
             }
 
             String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+            System.out.println(hash);
             User createdUser = userRepository.create(username, email, hash);
+            System.out.println(createdUser.getUserID() + " + " + createdUser.getUsername() + " + " + createdUser.getEmail() + " + " + createdUser.getPasswordHash());
             String token = newToken(username);
 
             createdUser.setToken(token);
-            userRepository.saveUserToken(createdUser.getUserID(), token);
+            createdUser = userRepository.saveUserToken(createdUser.getUserID(), token);
+            MRPApplication.setLoggedInUser(createdUser);
 
             return createdUser;
         } catch (SQLException exception) {
-            throw new RuntimeException("DB error during registration", exception);
+            throw new RuntimeException("Error registering user" + exception);
         }
     }
 
@@ -47,7 +53,8 @@ public class AuthService {
 
             String token = newToken(username);
             user.setToken(token);
-            userRepository.saveUserToken(user.getUserID(), token);
+            user = userRepository.saveUserToken(user.getUserID(), token);
+            MRPApplication.setLoggedInUser(user);
 
             return user;
         } catch (SQLException exception) {

@@ -36,7 +36,6 @@ public class AuthController extends Controller{
             JsonObject response = new JsonObject();
             response.addProperty("id", createdUser.getUserID());
             response.addProperty("username", createdUser.getUsername());
-            response.addProperty("token", createdUser.getToken());
             response.addProperty("message", "User registered");
 
             return json(Status.CREATED, response.toString());

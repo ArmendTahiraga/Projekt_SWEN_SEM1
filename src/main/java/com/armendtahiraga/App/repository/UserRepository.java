@@ -14,7 +14,7 @@ public class UserRepository {
     }
 
     public Optional<User> findById(int userId) throws SQLException {
-        String statement = "select user_id, username, password_hash, email from user where user_id = ?";
+        String statement = "select user_id, username, password_hash, email, \"token\" from \"user\" where user_id = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, userId);
@@ -26,19 +26,19 @@ public class UserRepository {
     }
 
     public Optional<User> findByUsername(String username) throws SQLException {
-        String statement = "select user_id, username, password_hash, email from user where username = ?";
+        String statement = "select user_id, username, password_hash, email, \"token\" from \"user\" where username = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
         } catch (SQLException exception) {
-            throw new SQLException("Error finding user by username", exception);
+            throw new SQLException(exception);
         }
     }
 
     public User create(String username, String email, String passwordHash) throws SQLException {
-        String statement = "insert into user (username, email, password_hash) values (?, ?, ?) returning user_id, username, password_hash, email";
+        String statement = "insert into \"user\" (username, email, password_hash) values (?, ?, ?) returning user_id, username, password_hash, email, \"token\"";
         try {
             PreparedStatement preparedStatement = UserRepository.this.connection.prepareStatement(statement);
             preparedStatement.setString(1, username);
@@ -58,7 +58,8 @@ public class UserRepository {
     }
 
     public User saveUserToken(int userId, String token) throws SQLException {
-        String statement = "update user set token = ? where user_id = ? returning user_id, username, password_hash, email";
+        System.out.println(token);
+        String statement = "update \"user\" set \"token\" = ? where user_id = ? returning user_id, username, password_hash, email, \"token\"";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setString(1, token);
@@ -77,7 +78,7 @@ public class UserRepository {
     }
 
     public User findUserByToken(String token) throws SQLException {
-        String statement = "select user_id, username, password_hash, email from user where token = ?";
+        String statement = "select user_id, username, password_hash, email, \"token\" from \"user\" where \"token\" = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setString(1, token);
@@ -95,6 +96,11 @@ public class UserRepository {
                 resultSet.getString("password_hash"),
                 resultSet.getString("email")
         );
+
+        if(resultSet.getString("token") != null){
+            user.setToken(resultSet.getString("token"));
+        }
+
         return user;
     }
 }

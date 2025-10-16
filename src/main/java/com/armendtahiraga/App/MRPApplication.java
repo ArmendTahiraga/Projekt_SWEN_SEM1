@@ -2,6 +2,7 @@ package com.armendtahiraga.App;
 
 import com.armendtahiraga.App.controllers.AuthController;
 import com.armendtahiraga.App.database.Database;
+import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.Server.ContentType;
@@ -14,6 +15,7 @@ public class MRPApplication implements Application {
     private UserRepository userRepository;
     private AuthController authController;
     private AuthService authService;
+    private static User loggedInUser;
 
     public MRPApplication(){
         Database.connect();
@@ -44,5 +46,13 @@ public class MRPApplication implements Application {
 
                 return new Response(Status.NOT_FOUND, ContentType.TEXT_PLAIN, Status.NOT_FOUND.getMessage());
             });
+    }
+
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public static void setLoggedInUser(User loggedInUser) {
+        MRPApplication.loggedInUser = loggedInUser;
     }
 }
