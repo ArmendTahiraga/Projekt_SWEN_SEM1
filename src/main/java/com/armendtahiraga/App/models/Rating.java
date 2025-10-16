@@ -1,10 +1,8 @@
-package com.armendtahiraga.App.Models;
-
-import java.time.Instant;
+package com.armendtahiraga.App.models;
 
 public class Rating {
     private int ratingID;
-    private int movieID;
+    private int mediaID;
     private int userID;
     private int stars;
     private String comment;
@@ -12,9 +10,9 @@ public class Rating {
     public boolean confirmed;
     public int likes;
 
-    public Rating(int ratingID, int movieID, int userID, int stars, String comment, String timestamp) {
+    public Rating(int ratingID, int mediaID, int userID, int stars, String comment, String timestamp) {
         this.ratingID = ratingID;
-        this.movieID = movieID;
+        this.mediaID = mediaID;
         this.userID = userID;
         this.stars = stars;
         this.comment = comment;
@@ -25,8 +23,8 @@ public class Rating {
         return ratingID;
     }
 
-    public int getMovieID() {
-        return movieID;
+    public int getMediaID() {
+        return mediaID;
     }
 
     public int getUserID() {

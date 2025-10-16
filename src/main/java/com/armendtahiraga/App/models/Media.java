@@ -1,10 +1,10 @@
-package com.armendtahiraga.App.Models;
+package com.armendtahiraga.App.models;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Movie {
-    private int movieID;
+public class Media {
+    private int mediaID;
     private int creatorUserId;
     private String title;
     private String description;
@@ -15,8 +15,8 @@ public class Movie {
     private double averageScore;
     private List<Rating> ratings = new ArrayList<>();
 
-    public Movie(int movieID, int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
-        this.movieID = movieID;
+    public Media(int mediaID, int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+        this.mediaID = mediaID;
         this.creatorUserId = creatorUserId;
         this.title = title;
         this.description = description;
@@ -27,8 +27,8 @@ public class Movie {
         this.averageScore = 0.0;
     }
 
-    public int getMovieID() {
-        return movieID;
+    public int getMediaID() {
+        return mediaID;
     }
 
     public int getCreatorUserId() {

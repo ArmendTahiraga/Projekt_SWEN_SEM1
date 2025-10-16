@@ -1,4 +1,4 @@
-package com.armendtahiraga.App.Models;
+package com.armendtahiraga.App.models;
 
 import java.util.List;
 
@@ -8,16 +8,16 @@ public class User {
     private String passwordHash;
     private String email;
     private String favoriteGenre;
-    private List<Movie> favoriteMovies;
+    private List<Media> favoriteMedia;
     private List<String> recommendations;
 
-    public User(int userID, String username, String passwordHash, String email, String favoriteGenre, List<Movie> favoriteMovies, List<String> recommendations) {
+    public User(int userID, String username, String passwordHash, String email, String favoriteGenre, List<Media> favoriteMedia, List<String> recommendations) {
         this.userID = userID;
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
         this.favoriteGenre = favoriteGenre;
-        this.favoriteMovies = favoriteMovies;
+        this.favoriteMedia = favoriteMedia;
         this.recommendations = recommendations;
     }
 
@@ -41,8 +41,8 @@ public class User {
         return favoriteGenre;
     }
 
-    public List<Movie> getFavoriteMovies() {
-        return favoriteMovies;
+    public List<Media> getFavoriteMovies() {
+        return favoriteMedia;
     }
 
     public List<String> getRecommendations() {
