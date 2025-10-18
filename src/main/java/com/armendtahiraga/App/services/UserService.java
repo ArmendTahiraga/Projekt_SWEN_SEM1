@@ -25,4 +25,17 @@ public class UserService {
             throw new RuntimeException("DB error during fetching user by ID");
         }
     }
+
+    public User updateUser(int userID, String email, String favoriteGenre) {
+        try{
+            Optional<User> updatedUser = userRepository.updateUser(userID, email, favoriteGenre);
+            if (updatedUser.isEmpty()) {
+                throw new IllegalArgumentException("User not found for update");
+            }
+            System.out.println(updatedUser.get().getFavoriteGenre());
+            return updatedUser.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during updating user profile");
+        }
+    }
 }

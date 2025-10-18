@@ -89,6 +89,23 @@ public class UserRepository {
         }
     }
 
+    public Optional<User> updateUser(int id, String email, String favoriteGenre) throws SQLException {
+        String statement = "update \"user\" set email = ?, favorite_genre = ? where user_id = ? returning user_id, username, password_hash, email, \"token\"";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, favoriteGenre);
+            preparedStatement.setInt(3, id);
+            System.out.println(preparedStatement);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
+        } catch (SQLException exception) {
+            throw new SQLException("Error updating user", exception);
+        }
+    }
+
     private User mapUser(ResultSet resultSet) throws SQLException {
         User user = new User(
                 resultSet.getInt("user_id"),
