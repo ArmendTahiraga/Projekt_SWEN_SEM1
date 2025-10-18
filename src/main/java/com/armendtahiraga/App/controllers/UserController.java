@@ -18,7 +18,7 @@ public class UserController extends Controller {
         try{
             String path = request.getPath().split("/users/")[1];
             int userID = Integer.parseInt(path.split("/profile")[0]);
-
+            System.out.println(userID);
             User user = userService.getUserByID(userID);
 
             JsonObject response = new JsonObject();
@@ -26,7 +26,11 @@ public class UserController extends Controller {
             response.addProperty("username", user.getUsername());
             response.addProperty("email", user.getEmail());
             response.addProperty("favoriteGenre", user.getFavoriteGenre());
-            response.addProperty("favoriteMedias", user.getFavoriteMedias().toString());
+            if (user.getFavoriteMedias() != null && !user.getFavoriteMedias().isEmpty()){
+                response.addProperty("favoriteMedias", user.getFavoriteMedias().toString());
+            } else {
+                response.addProperty("favoriteMedias", "[]");
+            }
 
             return json(Status.OK, response.toString());
         } catch (Exception exception) {

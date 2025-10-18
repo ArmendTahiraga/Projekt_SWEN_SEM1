@@ -3,7 +3,6 @@ package com.armendtahiraga.App.controllers;
 import com.armendtahiraga.Server.ContentType;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
-import com.google.gson.JsonObject;
 
 public abstract class Controller {
     protected Response ok() {
@@ -28,7 +27,7 @@ public abstract class Controller {
 
     private Response response(Status status, ContentType contentType, String body) {
         Response response = new Response();
-        response.setStatusCode(status);
+        response.setStatus(status);
         response.setContentType(contentType);
         response.setBody(body);
 
