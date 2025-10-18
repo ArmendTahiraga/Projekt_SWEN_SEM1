@@ -28,7 +28,7 @@ public class Handler implements HttpHandler {
     public void send(HttpExchange exchange, Response response) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", response.getContentType());
         byte[] bytes = response.getBody().getBytes(StandardCharsets.UTF_8);
-        exchange.sendResponseHeaders(response.getStatusCode().getCode(), bytes.length);
+        exchange.sendResponseHeaders(response.getStatus().getCode(), bytes.length);
         try(OutputStream outputStream = exchange.getResponseBody()) {
             outputStream.write(bytes);
         }

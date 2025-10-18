@@ -1,8 +1,11 @@
 package com.armendtahiraga.App.controllers;
 
+import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.services.UserService;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
+import com.armendtahiraga.Server.Status;
+import com.google.gson.JsonObject;
 
 public class UserController extends Controller {
     private UserService userService;
@@ -12,7 +15,23 @@ public class UserController extends Controller {
     }
 
     public Response getUserProfile(Request request){
-        return ok();
+        try{
+            String path = request.getPath().split("/users/")[1];
+            int userID = Integer.parseInt(path.split("/profile")[0]);
+
+            User user = userService.getUserByID(userID);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("id", user.getUserID());
+            response.addProperty("username", user.getUsername());
+            response.addProperty("email", user.getEmail());
+            response.addProperty("favoriteGenre", user.getFavoriteGenre());
+            response.addProperty("favoriteMedias", user.getFavoriteMedias().toString());
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception) {
+            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
     }
 
     public Response updateUserProfile(Request request){

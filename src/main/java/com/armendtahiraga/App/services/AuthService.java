@@ -17,16 +17,12 @@ public class AuthService {
 
     public User register(String username, String email, String password){
         try {
-            System.out.println("Registering user: " + username + ", " + email);
             if (userRepository.findByUsername(username).isPresent()) {
-                System.out.println("Username already taken: " + username);
                 throw new IllegalArgumentException("Username already taken");
             }
 
             String hash = BCrypt.hashpw(password, BCrypt.gensalt());
-            System.out.println(hash);
             User createdUser = userRepository.create(username, email, hash);
-            System.out.println(createdUser.getUserID() + " + " + createdUser.getUsername() + " + " + createdUser.getEmail() + " + " + createdUser.getPasswordHash());
             String token = newToken(username);
 
             createdUser.setToken(token);

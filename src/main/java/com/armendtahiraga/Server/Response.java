@@ -1,24 +1,24 @@
 package com.armendtahiraga.Server;
 
 public class Response {
-    private Status statusCode;
+    private Status status;
     private String body;
     private ContentType contentType;
 
     public Response(){}
 
-    public Response(Status statusCode, ContentType contentType, String body) {
-        this.statusCode = statusCode;
+    public Response(Status status, ContentType contentType, String body) {
+        this.status = status;
         this.body = body;
         this.contentType = contentType;
     }
 
-    public Status getStatusCode() {
-        return statusCode;
+    public Status getStatus() {
+        return status;
     }
 
     public String getStatusMessage() {
-        return statusCode.getMessage();
+        return status.getMessage();
     }
 
     public String getBody() {
@@ -29,8 +29,8 @@ public class Response {
         return contentType.getMimeType();
     }
 
-    public void setStatusCode(Status statusCode) {
-        this.statusCode = statusCode;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setBody(String body) {

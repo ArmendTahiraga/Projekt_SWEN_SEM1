@@ -9,7 +9,6 @@ public class User {
     private String email;
     private String favoriteGenre;
     private List<Media> favoriteMedias;
-    private List<String> recommendations;
     private String token;
 
     public User(int userID, String username, String passwordHash, String email) {
@@ -41,10 +40,6 @@ public class User {
 
     public List<Media> getFavoriteMedias() {
         return favoriteMedias;
-    }
-
-    public List<String> getRecommendations() {
-        return recommendations;
     }
 
     public String getToken() {

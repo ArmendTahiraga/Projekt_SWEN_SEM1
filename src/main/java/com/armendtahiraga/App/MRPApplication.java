@@ -5,6 +5,10 @@ import com.armendtahiraga.App.controllers.MediaController;
 import com.armendtahiraga.App.controllers.RatingController;
 import com.armendtahiraga.App.controllers.UserController;
 import com.armendtahiraga.App.database.Database;
+import com.armendtahiraga.App.exceptions.ExceptionMapper;
+import com.armendtahiraga.App.exceptions.JsonConversionException;
+import com.armendtahiraga.App.exceptions.NotFoundException;
+import com.armendtahiraga.App.exceptions.NotJsonBodyException;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.MediaRepository;
 import com.armendtahiraga.App.repository.RatingRepository;
@@ -18,8 +22,11 @@ import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
 
+import java.rmi.ServerError;
+
 public class MRPApplication implements Application {
     private Router router;
+    private ExceptionMapper exceptionMapper;
 
     private UserRepository userRepository;
     private MediaRepository mediaRepository;
@@ -40,6 +47,7 @@ public class MRPApplication implements Application {
     public MRPApplication(){
         Database.connect();
         this.router = new Router();
+        this.exceptionMapper = new ExceptionMapper();
 
         this.userRepository = new UserRepository();
         this.mediaRepository = new MediaRepository();
@@ -82,6 +90,12 @@ public class MRPApplication implements Application {
         router.addRoute("PUT", "/ratings/{ratingId}", ratingController::updateRating);
         router.addRoute("DELETE", "/ratings/{ratingId}", ratingController::deleteRating);
         router.addRoute("POST", "/ratings/{ratingId}/confirm", ratingController::confirmRating);
+    }
+
+    private void registerExceptions(){
+        exceptionMapper.registerException(NotFoundException.class, Status.NOT_FOUND);
+        exceptionMapper.registerException(JsonConversionException.class, Status.BAD_REQUEST);
+        exceptionMapper.registerException(NotJsonBodyException.class, Status.INTERNAL_SERVER_ERROR);
     }
 
     @Override
