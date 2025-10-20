@@ -22,8 +22,6 @@ import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
 
-import java.rmi.ServerError;
-
 public class MRPApplication implements Application {
     private Router router;
     private ExceptionMapper exceptionMapper;
@@ -41,8 +39,6 @@ public class MRPApplication implements Application {
     private UserController userController;
     private MediaController mediaController;
     private RatingController ratingController;
-
-    private static User loggedInUser;
 
     public MRPApplication(){
         Database.connect();
@@ -98,8 +94,49 @@ public class MRPApplication implements Application {
         exceptionMapper.registerException(NotJsonBodyException.class, Status.INTERNAL_SERVER_ERROR);
     }
 
+    private static boolean isAuthNotRequired(Request req) {
+        String path = req.getPath();
+        String method = req.getMethod();
+
+        if (method.equalsIgnoreCase("POST")) {
+            return "/api/users/login".equals(path) || "/api/users/register".equals(path);
+        }
+
+        return false;
+    }
+
+    private static String extractToken(Request req) {
+        String header = req.getHeader("Authorization");
+
+        if (header == null) {
+            return null;
+        }
+
+        String[] parts = header.split("\\s+");
+        if (parts.length == 2 && parts[0].equalsIgnoreCase("Bearer")) {
+            return parts[1].trim();
+        }
+
+        return header.trim();
+    }
+
     @Override
     public Response handleRequest(Request request) {
+        if (!isAuthNotRequired(request)) {
+            String token = extractToken(request);
+
+            if (token == null || token.isEmpty()) {
+                return new Response(Status.UNAUTHORIZED, ContentType.APPLICATION_JSON, "{\"error\":\"Missing Bearer token\"}");
+            }
+
+            try {
+                User user = authService.verifyToken(token);
+                request.setCurrentUser(user);
+            } catch (IllegalArgumentException exception) {
+                return new Response(Status.UNAUTHORIZED, ContentType.APPLICATION_JSON, "{\"error\":\"Invalid or expired token\"}");
+            }
+        }
+
         return router.findRoute(request)
             .map(route -> route.getEndpoint().handle(request))
             .orElseGet(() -> {
@@ -109,13 +146,5 @@ public class MRPApplication implements Application {
 
                 return new Response(Status.NOT_FOUND, ContentType.TEXT_PLAIN, Status.NOT_FOUND.getMessage());
             });
-    }
-
-    public static User getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public static void setLoggedInUser(User loggedInUser) {
-        MRPApplication.loggedInUser = loggedInUser;
     }
 }

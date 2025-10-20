@@ -11,11 +11,12 @@ public class User {
     private List<Media> favoriteMedias;
     private String token;
 
-    public User(int userID, String username, String passwordHash, String email) {
+    public User(int userID, String username, String passwordHash, String email, String favoriteGenre) {
         this.userID = userID;
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
+        this.favoriteGenre = favoriteGenre;
     }
 
     public int getUserID() {

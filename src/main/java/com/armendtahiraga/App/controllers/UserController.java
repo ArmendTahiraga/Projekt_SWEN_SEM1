@@ -17,8 +17,13 @@ public class UserController extends Controller {
 
     public Response getUserProfile(Request request){
         try{
-            String path = request.getPath().split("/users/")[1];
-            int userID = Integer.parseInt(path.split("/profile")[0]);
+            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/profile")[0]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null || principal.getUserID() != userID) {
+                return error(Status.FORBIDDEN, "Not allowed to view this profile");
+            }
+
             User user = userService.getUserByID(userID);
 
             JsonObject response = new JsonObject();
@@ -44,8 +49,12 @@ public class UserController extends Controller {
                 return error(Status.BAD_REQUEST, "Request body is empty");
             }
 
-            String path = request.getPath().split("/users/")[1];
-            int userID = Integer.parseInt(path.split("/profile")[0]);
+            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/profile")[0]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null || principal.getUserID() != userID) {
+                return error(Status.FORBIDDEN, "Not allowed to view this profile");
+            }
 
             JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
 

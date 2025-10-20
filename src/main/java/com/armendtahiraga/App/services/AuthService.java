@@ -1,6 +1,6 @@
 package com.armendtahiraga.App.services;
 
-import com.armendtahiraga.App.MRPApplication;
+import com.armendtahiraga.App.TokenRegistry;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -23,11 +23,10 @@ public class AuthService {
 
             String hash = BCrypt.hashpw(password, BCrypt.gensalt());
             User createdUser = userRepository.create(username, email, hash);
-            String token = newToken(username);
 
+            String token = newToken(username);
+            TokenRegistry.bindUserToken(createdUser, token);
             createdUser.setToken(token);
-            createdUser = userRepository.saveUserToken(createdUser.getUserID(), token);
-            MRPApplication.setLoggedInUser(createdUser);
 
             return createdUser;
         } catch (SQLException exception) {
@@ -48,9 +47,8 @@ public class AuthService {
             }
 
             String token = newToken(username);
+            TokenRegistry.bindUserToken(user, token);
             user.setToken(token);
-            user = userRepository.saveUserToken(user.getUserID(), token);
-            MRPApplication.setLoggedInUser(user);
 
             return user;
         } catch (SQLException exception) {
@@ -59,16 +57,12 @@ public class AuthService {
     }
 
     public User verifyToken(String token) {
-        try {
-            User user = userRepository.findUserByToken(token);
+        User user = TokenRegistry.get(token);
 
-            if(user == null){
-                throw new IllegalArgumentException("Invalid or expired token");
-            } else {
-                return user;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("DB error during token verification", e);
+        if(user == null){
+            throw new IllegalArgumentException("Invalid or expired token");
+        } else {
+            return user;
         }
     }
 

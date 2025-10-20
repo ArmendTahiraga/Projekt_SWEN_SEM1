@@ -1,6 +1,7 @@
 package com.armendtahiraga.Server.util;
 
 import com.armendtahiraga.Server.Request;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -13,6 +14,12 @@ public class RequestMapper {
         Request request = new Request();
         request.setMethod(exchange.getRequestMethod());
         request.setPath(exchange.getRequestURI().getPath());
+
+        Headers headers = exchange.getRequestHeaders();
+        for (String key : headers.keySet()) {
+            String value = String.join(",", headers.get(key));
+            request.putHeader(key, value);
+        }
 
         InputStream inputStream = exchange.getRequestBody();
 
