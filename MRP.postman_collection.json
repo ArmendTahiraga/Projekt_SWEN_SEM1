@@ -1,0 +1,127 @@
+{
+	"info": {
+		"_postman_id": "189c00e8-72f4-44dc-89f6-5492ef7203a2",
+		"name": "MRP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39327393"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Armend\", \"password\": \"armend\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/users/login",
+					"host": ["{{api}}"],
+					"path": ["users", "login"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Mendi\", \"email\": \"armend@tahiraga\", \"password\": \"armend\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/users/register",
+					"host": ["{{api}}"],
+					"path": ["users", "register"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/users/9/profile",
+					"host": ["{{api}}"],
+					"path": ["users", "9", "profile"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user profile",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"email\": \"armennnd@outlook.com\", \"favoriteGenre\": \"horror\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/users/9/profile",
+					"host": ["{{api}}"],
+					"path": ["users", "9", "profile"]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api",
+			"value": "http://localhost:8080/api"
+		}
+	]
+}
