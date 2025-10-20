@@ -1,5 +1,8 @@
 package com.armendtahiraga.App.controllers;
 
+import com.armendtahiraga.App.exceptions.BadRequestException;
+import com.armendtahiraga.App.exceptions.DatabaseException;
+import com.armendtahiraga.App.exceptions.ExceptionMapper;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.Server.Request;
@@ -18,7 +21,7 @@ public class AuthController extends Controller{
     public Response register(Request request) {
         try{
             if (request.getBody() == null || request.getBody().isEmpty()) {
-                return error(Status.BAD_REQUEST, "Request body is empty");
+                return ExceptionMapper.toResponse(new BadRequestException("Request body is empty"));
             }
 
             JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
@@ -28,7 +31,7 @@ public class AuthController extends Controller{
             String password = body.get("password").getAsString();
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                return error(Status.BAD_REQUEST, "Missing username, email or password");
+                return ExceptionMapper.toResponse(new BadRequestException("Username or email or password is missing"));
             }
 
             User createdUser = authService.register(username, email, password);
@@ -41,14 +44,14 @@ public class AuthController extends Controller{
 
             return json(Status.CREATED, response.toString());
         } catch (Exception exception){
-            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+            return ExceptionMapper.toResponse(new DatabaseException("Failed to register user: " + exception.getMessage()));
         }
     }
 
     public Response login(Request request) {
         try{
             if (request.getBody() == null || request.getBody().isEmpty()) {
-                return error(Status.BAD_REQUEST, "Request body is empty");
+                return ExceptionMapper.toResponse(new BadRequestException("Request body is empty"));
             }
 
             JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
@@ -57,7 +60,7 @@ public class AuthController extends Controller{
             String password = body.get("password").getAsString();
 
             if (username.isEmpty() || password.isEmpty()) {
-                return error(Status.BAD_REQUEST, "Missing username or password");
+                return ExceptionMapper.toResponse(new BadRequestException("Username or password is missing"));
             }
 
             User user = authService.login(username, password);
@@ -70,7 +73,7 @@ public class AuthController extends Controller{
 
             return json(Status.OK, response.toString());
         } catch (Exception exception) {
-            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+            return ExceptionMapper.toResponse(new DatabaseException("Failed to login user: " + exception.getMessage()));
         }
     }
 }

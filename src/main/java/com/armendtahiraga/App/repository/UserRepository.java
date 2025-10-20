@@ -4,7 +4,6 @@ import com.armendtahiraga.App.database.Database;
 import com.armendtahiraga.App.models.User;
 
 import java.sql.*;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class UserRepository {

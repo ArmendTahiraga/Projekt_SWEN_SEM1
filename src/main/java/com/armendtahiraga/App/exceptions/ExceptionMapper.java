@@ -8,17 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExceptionMapper {
-    private final Map<Class<?>, Status> exceptionMap;
+    private static final Map<Class<?>, Status> exceptionMap = new HashMap<>();
 
-    public ExceptionMapper() {
-        this.exceptionMap = new HashMap<>();
-    }
-
-    public void registerException(Class<?> exceptionClass, Status status) {
+    public static void registerException(Class<?> exceptionClass, Status status) {
         exceptionMap.put(exceptionClass, status);
     }
 
-    public Response ToResponse(Exception exception) {
+    public static Response toResponse(Exception exception) {
         Response response = new Response();
         Status status = exceptionMap.get(exception.getClass());
 

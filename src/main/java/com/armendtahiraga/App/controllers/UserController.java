@@ -1,5 +1,9 @@
 package com.armendtahiraga.App.controllers;
 
+import com.armendtahiraga.App.exceptions.BadRequestException;
+import com.armendtahiraga.App.exceptions.DatabaseException;
+import com.armendtahiraga.App.exceptions.ExceptionMapper;
+import com.armendtahiraga.App.exceptions.UnauthorizedException;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.services.UserService;
 import com.armendtahiraga.Server.Request;
@@ -21,7 +25,7 @@ public class UserController extends Controller {
 
             User principal = request.getCurrentUser();
             if (principal == null || principal.getUserID() != userID) {
-                return error(Status.FORBIDDEN, "Not allowed to view this profile");
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
             User user = userService.getUserByID(userID);
@@ -39,21 +43,21 @@ public class UserController extends Controller {
 
             return json(Status.OK, response.toString());
         } catch (Exception exception) {
-            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+            return ExceptionMapper.toResponse(new DatabaseException("Failed get user profile: " + exception.getMessage()));
         }
     }
 
     public Response updateUserProfile(Request request){
         try{
             if (request.getBody() == null || request.getBody().isEmpty()) {
-                return error(Status.BAD_REQUEST, "Request body is empty");
+                return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));
             }
 
             int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/profile")[0]);
 
             User principal = request.getCurrentUser();
             if (principal == null || principal.getUserID() != userID) {
-                return error(Status.FORBIDDEN, "Not allowed to view this profile");
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
             JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
@@ -62,7 +66,7 @@ public class UserController extends Controller {
             String favoriteGenre = body.get("favoriteGenre").getAsString();
 
             if (favoriteGenre.isEmpty() || email.isEmpty()) {
-                return error(Status.BAD_REQUEST, "Missing email or favorite genre");
+                return ExceptionMapper.toResponse(new BadRequestException("User email or favorite genre are missing"));
             }
 
             User updatedUser = userService.updateUser(userID, email, favoriteGenre);
@@ -74,7 +78,7 @@ public class UserController extends Controller {
 
             return json(Status.OK, response.toString());
         } catch (Exception exception){
-            return error(Status.INTERNAL_SERVER_ERROR, exception.getMessage());
+            return ExceptionMapper.toResponse(new DatabaseException("Failed update user profile: " + exception.getMessage()));
         }
     }
 

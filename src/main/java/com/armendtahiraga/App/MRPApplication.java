@@ -5,10 +5,7 @@ import com.armendtahiraga.App.controllers.MediaController;
 import com.armendtahiraga.App.controllers.RatingController;
 import com.armendtahiraga.App.controllers.UserController;
 import com.armendtahiraga.App.database.Database;
-import com.armendtahiraga.App.exceptions.ExceptionMapper;
-import com.armendtahiraga.App.exceptions.JsonConversionException;
-import com.armendtahiraga.App.exceptions.NotFoundException;
-import com.armendtahiraga.App.exceptions.NotJsonBodyException;
+import com.armendtahiraga.App.exceptions.*;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.MediaRepository;
 import com.armendtahiraga.App.repository.RatingRepository;
@@ -24,7 +21,6 @@ import com.armendtahiraga.Server.Status;
 
 public class MRPApplication implements Application {
     private Router router;
-    private ExceptionMapper exceptionMapper;
 
     private UserRepository userRepository;
     private MediaRepository mediaRepository;
@@ -43,7 +39,6 @@ public class MRPApplication implements Application {
     public MRPApplication(){
         Database.connect();
         this.router = new Router();
-        this.exceptionMapper = new ExceptionMapper();
 
         this.userRepository = new UserRepository();
         this.mediaRepository = new MediaRepository();
@@ -60,6 +55,7 @@ public class MRPApplication implements Application {
         this.ratingController = new RatingController(ratingService);
 
         createRoutes();
+        registerExceptions();
     }
 
     private void createRoutes(){
@@ -89,9 +85,16 @@ public class MRPApplication implements Application {
     }
 
     private void registerExceptions(){
-        exceptionMapper.registerException(NotFoundException.class, Status.NOT_FOUND);
-        exceptionMapper.registerException(JsonConversionException.class, Status.BAD_REQUEST);
-        exceptionMapper.registerException(NotJsonBodyException.class, Status.INTERNAL_SERVER_ERROR);
+        ExceptionMapper.registerException(NotFoundException.class, Status.NOT_FOUND);
+        ExceptionMapper.registerException(JsonConversionException.class, Status.BAD_REQUEST);
+        ExceptionMapper.registerException(NotJsonBodyException.class, Status.INTERNAL_SERVER_ERROR);
+        ExceptionMapper.registerException(BadRequestException.class, Status.BAD_REQUEST);
+        ExceptionMapper.registerException(UnauthorizedException.class, Status.UNAUTHORIZED);
+        ExceptionMapper.registerException(ForbiddenException.class, Status.FORBIDDEN);
+        ExceptionMapper.registerException(InvalidParameterException.class, Status.BAD_REQUEST);
+        ExceptionMapper.registerException(DatabaseException.class, Status.INTERNAL_SERVER_ERROR);
+        ExceptionMapper.registerException(InvalidTokenException.class, Status.UNAUTHORIZED);
+        ExceptionMapper.registerException(MethodNotAllowedException.class, Status.METHOD_NOT_ALLOWED);
     }
 
     private static boolean isAuthNotRequired(Request req) {
@@ -126,14 +129,14 @@ public class MRPApplication implements Application {
             String token = extractToken(request);
 
             if (token == null || token.isEmpty()) {
-                return new Response(Status.UNAUTHORIZED, ContentType.APPLICATION_JSON, "{\"error\":\"Missing Bearer token\"}");
+                return ExceptionMapper.toResponse(new UnauthorizedException("Authorization token is missing"));
             }
 
             try {
                 User user = authService.verifyToken(token);
                 request.setCurrentUser(user);
             } catch (IllegalArgumentException exception) {
-                return new Response(Status.UNAUTHORIZED, ContentType.APPLICATION_JSON, "{\"error\":\"Invalid or expired token\"}");
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid token"));
             }
         }
 
@@ -141,10 +144,10 @@ public class MRPApplication implements Application {
             .map(route -> route.getEndpoint().handle(request))
             .orElseGet(() -> {
                 if (router.pathExists(request.getPath())) {
-                    return new Response(Status.METHOD_NOT_ALLOWED, ContentType.TEXT_PLAIN, Status.METHOD_NOT_ALLOWED.getMessage());
+                    return ExceptionMapper.toResponse(new MethodNotAllowedException("Method not allowed"));
                 }
 
-                return new Response(Status.NOT_FOUND, ContentType.TEXT_PLAIN, Status.NOT_FOUND.getMessage());
+                return ExceptionMapper.toResponse(new NotFoundException("Not found"));
             });
     }
 }
