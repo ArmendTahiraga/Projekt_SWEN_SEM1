@@ -67,29 +67,29 @@ public class MRPApplication implements Application {
     }
 
     private void createRoutes(){
-        router.addRoute("POST", "/users/register", authController::register);
-        router.addRoute("POST", "/users/login", authController::login);
+        router.addRoute("POST", "/api/users/register", authController::register);
+        router.addRoute("POST", "/api/users/login", authController::login);
 
-        router.addRoute("GET", "/users/{userId}/profile", userController::getUserProfile);
-        router.addRoute("PUT", "/users/{userId}/profile", userController::updateUserProfile);
-        router.addRoute("GET", "/users/{userId}/ratings", userController::getUserRatings);
-        router.addRoute("GET", "/users/{userId}/favorites", userController::getUserFavorites);
-        router.addRoute("POST", "/media/{mediaId}/favorite", userController::addMediaToFavorites);
-        router.addRoute("DELETE", "/media/{mediaId}/favorite", userController::removeMediaFromFavorites);
-        router.addRoute("GET", "/users/{userId}/recommendations", userController::getRecommendations);
-        router.addRoute("GET", "/leaderboard", userController::getLeaderboard);
+        router.addRoute("GET", "/api/users/{userId}/profile", userController::getUserProfile);
+        router.addRoute("PUT", "/api/users/{userId}/profile", userController::updateUserProfile);
+        router.addRoute("GET", "/api/users/{userId}/ratings", userController::getUserRatings);
+        router.addRoute("GET", "/api/users/{userId}/favorites", userController::getUserFavorites);
+        router.addRoute("POST", "/api/media/{mediaId}/favorite", userController::addMediaToFavorites);
+        router.addRoute("DELETE", "/api/media/{mediaId}/favorite", userController::removeMediaFromFavorites);
+        router.addRoute("GET", "/api/users/{userId}/recommendations", userController::getRecommendations);
+        router.addRoute("GET", "/api/leaderboard", userController::getLeaderboard);
 
-        router.addRoute("GET", "/media", mediaController::getAllMedia);
-        router.addRoute("POST", "/media", mediaController::createMedia);
-        router.addRoute("DELETE", "/media/{mediaId}", mediaController::deleteMedia);
-        router.addRoute("GET", "/media/{mediaId}", mediaController::getMediaById);
-        router.addRoute("PUT", "/media/{mediaId}", mediaController::updateMedia);
+        router.addRoute("GET", "/api/media", mediaController::getAllMedia);
+        router.addRoute("POST", "/api/media", mediaController::createMedia);
+        router.addRoute("DELETE", "/api/media/{mediaId}", mediaController::deleteMedia);
+        router.addRoute("GET", "/api/media/{mediaId}", mediaController::getMediaById);
+        router.addRoute("PUT", "/api/media/{mediaId}", mediaController::updateMedia);
 
-        router.addRoute("POST", "/media/{mediaId}/rate", ratingController::rateMedia);
-        router.addRoute("POST", "/ratings/{ratingId}/like", ratingController::likeRating);
-        router.addRoute("PUT", "/ratings/{ratingId}", ratingController::updateRating);
-        router.addRoute("DELETE", "/ratings/{ratingId}", ratingController::deleteRating);
-        router.addRoute("POST", "/ratings/{ratingId}/confirm", ratingController::confirmRating);
+        router.addRoute("POST", "/api/media/{mediaId}/rate", ratingController::rateMedia);
+        router.addRoute("POST", "/api/ratings/{ratingId}/like", ratingController::likeRating);
+        router.addRoute("PUT", "/api/ratings/{ratingId}", ratingController::updateRating);
+        router.addRoute("DELETE", "/api/ratings/{ratingId}", ratingController::deleteRating);
+        router.addRoute("POST", "/api/ratings/{ratingId}/confirm", ratingController::confirmRating);
     }
 
     private void registerExceptions(){
