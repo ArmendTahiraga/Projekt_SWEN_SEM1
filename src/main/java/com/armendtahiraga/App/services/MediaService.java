@@ -53,4 +53,12 @@ public class MediaService {
             throw new RuntimeException("DB error during fetching media by ID");
         }
     }
+
+    public void deleteMedia(int mediaId) {
+        try{
+            mediaRepository.deleteMedia(mediaId);
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during deleting media");
+        }
+    }
 }

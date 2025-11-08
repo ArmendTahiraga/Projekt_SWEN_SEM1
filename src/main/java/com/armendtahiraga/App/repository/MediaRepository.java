@@ -67,6 +67,17 @@ public class MediaRepository {
         }
     }
 
+    public void deleteMedia(int mediaId) throws SQLException {
+        String statement = "delete from media where media_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, mediaId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception){
+            throw new SQLException("Error deleting media", exception);
+        }
+    }
+
     private Media mapMedia(ResultSet resultSet) throws SQLException {
         int mediaId = resultSet.getInt("media_id");
         int creatorUserId = resultSet.getInt("creator_user_id");
