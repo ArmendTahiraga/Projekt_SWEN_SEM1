@@ -41,6 +41,19 @@ public class MediaService {
         }
     }
 
+    public Media updateMedia(int mediaId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+        try{
+            Optional<Media> updatedMedia = mediaRepository.updateMedia(mediaId, title, description, mediaType, releaseYear, ageRestriction, genres);
+            if (updatedMedia.isEmpty()) {
+                throw new IllegalArgumentException("Media could not be updated");
+            }
+
+            return updatedMedia.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during updating media");
+        }
+    }
+
     public Media getMediaById(int mediaId) {
         try{
             Optional<Media> media = mediaRepository.getMediaById(mediaId);

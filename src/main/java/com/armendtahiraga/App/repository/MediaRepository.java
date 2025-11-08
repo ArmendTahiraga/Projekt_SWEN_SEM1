@@ -78,6 +78,25 @@ public class MediaRepository {
         }
     }
 
+    public Optional<Media> updateMedia(int mediaId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) throws SQLException {
+        String statement = "update media set title = ?, description = ?, media_type = ?, release_year = ?, age_restriction = ?, genres = ? where media_id = ? returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, description);
+            preparedStatement.setString(3, mediaType);
+            preparedStatement.setInt(4, releaseYear);
+            preparedStatement.setInt(5, ageRestriction);
+            preparedStatement.setString(6, genres.toString());
+            preparedStatement.setInt(7, mediaId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
+        } catch (SQLException exception){
+            throw new SQLException("Error updating media", exception);
+        }
+    }
+
     private Media mapMedia(ResultSet resultSet) throws SQLException {
         int mediaId = resultSet.getInt("media_id");
         int creatorUserId = resultSet.getInt("creator_user_id");

@@ -46,7 +46,7 @@ public class MediaController extends Controller {
 
             return json(Status.OK, response.toString());
         } catch (Exception exception){
-            return ExceptionMapper.toResponse(new BadRequestException("Failed to get all media: " + exception.getMessage()));
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to get medias: " + exception.getMessage()));
         }
     }
 
@@ -67,12 +67,12 @@ public class MediaController extends Controller {
             String description = body.get("description").getAsString();
             String mediaType = body.get("mediaType").getAsString();
             int releaseYear = body.get("releaseYear").getAsInt();
+            int ageRestriction = body.get("ageRestriction").getAsInt();
             List<JsonElement> genreList = body.get("genres").getAsJsonArray().asList();
             List<String> genres = new ArrayList<>();
             for (JsonElement genre : genreList) {
                 genres.add(genre.getAsString());
             }
-            int ageRestriction = body.get("ageRestriction").getAsInt();
 
             if (title.isEmpty() || description.isEmpty() || mediaType.isEmpty() || genres.isEmpty() || releaseYear <= 0 || ageRestriction < 0) {
                 return ExceptionMapper.toResponse(new BadRequestException("Missing required media fields"));
@@ -103,9 +103,9 @@ public class MediaController extends Controller {
             JsonObject response = new JsonObject();
             response.addProperty("message", "Media deleted successfully");
 
-            return json(Status.OK, response.toString());
+            return json(Status.DELETED, response.toString());
         } catch (Exception exception){
-            return ExceptionMapper.toResponse(new BadRequestException("Failed to get all media: " + exception.getMessage()));
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to delete media: " + exception.getMessage()));
         }
     }
 
@@ -125,12 +125,49 @@ public class MediaController extends Controller {
 
             return json(Status.OK, response.toString());
         } catch (Exception exception){
-            return ExceptionMapper.toResponse(new BadRequestException("Failed to get all media: " + exception.getMessage()));
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to get media: " + exception.getMessage()));
         }
     }
 
     public Response updateMedia(Request request){
-        return ok();
+        try{
+            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
+
+            if (request.getBody() == null || request.getBody().isEmpty()) {
+                return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));
+            }
+
+            User principal = request.getCurrentUser();
+            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            JsonObject body = JsonParser.parseString(request.getBody()).getAsJsonObject();
+
+            String title = body.get("title").getAsString();
+            String description = body.get("description").getAsString();
+            String mediaType = body.get("mediaType").getAsString();
+            int releaseYear = body.get("releaseYear").getAsInt();
+            int ageRestriction = body.get("ageRestriction").getAsInt();
+            List<JsonElement> genreList = body.get("genres").getAsJsonArray().asList();
+            List<String> genres = new ArrayList<>();
+            for (JsonElement genre : genreList) {
+                genres.add(genre.getAsString());
+            }
+
+            if (title.isEmpty() || description.isEmpty() || mediaType.isEmpty() || genres.isEmpty() || releaseYear <= 0 || ageRestriction < 0) {
+                return ExceptionMapper.toResponse(new BadRequestException("Missing required media fields"));
+            }
+
+            Media createdMedia = mediaService.updateMedia(mediaID, title, description, mediaType, releaseYear, ageRestriction, genres);
+
+            JsonObject response = mediaToJson(createdMedia);
+            response.addProperty("message", "Media updated successfully");
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to update media: " + exception.getMessage()));
+        }
     }
 
     private JsonObject mediaToJson(Media media) {

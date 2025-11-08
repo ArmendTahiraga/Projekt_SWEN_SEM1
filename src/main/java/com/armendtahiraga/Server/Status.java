@@ -3,6 +3,7 @@ package com.armendtahiraga.Server;
 public enum Status {
     OK(200, "OK"),
     CREATED(201, "Created"),
+    DELETED(204, "Deleted"),
     BAD_REQUEST(400, "Bad Request"),
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
