@@ -35,6 +35,19 @@ public class MediaRepository {
         }
     }
 
+    public Optional<Media> getMediaById(int mediaId) throws SQLException {
+        String statement = "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres from media where media_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, mediaId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
+        } catch (SQLException exception){
+            throw new SQLException("Error getting media by ID", exception);
+        }
+    }
+
     public Optional<Media> createMedia(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) throws SQLException {
         String statement = "insert into media (creator_user_id, title, description, media_type, release_year, age_restriction, genres) values (?, ?, ?, ?, ?, ?, ?) returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
         try{

@@ -94,7 +94,24 @@ public class MediaController extends Controller {
     }
 
     public Response getMediaById(Request request){
-        return ok();
+        try{
+            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            Media media = mediaService.getMediaById(mediaID);
+
+            JsonObject response = mediaToJson(media);
+            response.addProperty("message", "Medias fetched successfully");
+
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to get all media: " + exception.getMessage()));
+        }
     }
 
     public Response updateMedia(Request request){

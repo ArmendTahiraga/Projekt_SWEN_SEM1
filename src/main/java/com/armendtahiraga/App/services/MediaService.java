@@ -40,4 +40,17 @@ public class MediaService {
             throw new RuntimeException("DB error during creating media");
         }
     }
+
+    public Media getMediaById(int mediaId) {
+        try{
+            Optional<Media> media = mediaRepository.getMediaById(mediaId);
+            if (media.isEmpty()) {
+                throw new IllegalArgumentException("Media not found");
+            }
+
+            return media.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during fetching media by ID");
+        }
+    }
 }
