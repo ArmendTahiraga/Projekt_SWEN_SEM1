@@ -14,7 +14,6 @@ import com.armendtahiraga.App.services.AuthService;
 import com.armendtahiraga.App.services.MediaService;
 import com.armendtahiraga.App.services.RatingService;
 import com.armendtahiraga.App.services.UserService;
-import com.armendtahiraga.Server.ContentType;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
@@ -71,7 +70,7 @@ public class MRPApplication implements Application {
         router.addRoute("GET", "/api/users/{userId}/recommendations", userController::getRecommendations);
         router.addRoute("GET", "/api/leaderboard", userController::getLeaderboard);
 
-        router.addRoute("GET", "/api/media", mediaController::getAllMedia);
+        router.addRoute("GET", "/api/media", mediaController::getMedias);
         router.addRoute("POST", "/api/media", mediaController::createMedia);
         router.addRoute("DELETE", "/api/media/{mediaId}", mediaController::deleteMedia);
         router.addRoute("GET", "/api/media/{mediaId}", mediaController::getMediaById);

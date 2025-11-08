@@ -1,11 +1,43 @@
 package com.armendtahiraga.App.services;
 
+import com.armendtahiraga.App.models.Media;
 import com.armendtahiraga.App.repository.MediaRepository;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class MediaService {
     MediaRepository mediaRepository;
 
     public MediaService(MediaRepository mediaRepository) {
         this.mediaRepository = mediaRepository;
+    }
+
+    public List<Media> getMedias() {
+        try{
+            Optional<List<Media>> medias = mediaRepository.getMedias();
+
+            if (medias.isEmpty()){
+                throw new IllegalArgumentException("No media found");
+            }
+
+            return medias.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during fetching medias");
+        }
+    }
+
+    public Media createMedia(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+        try{
+            Optional<Media> createdMedia = mediaRepository.createMedia(creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
+            if (createdMedia.isEmpty()) {
+                throw new IllegalArgumentException("Media could not be created");
+            }
+
+            return createdMedia.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during creating media");
+        }
     }
 }
