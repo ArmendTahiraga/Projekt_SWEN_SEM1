@@ -1,6 +1,5 @@
 package com.armendtahiraga.App.services;
 
-import com.armendtahiraga.App.TokenRegistry;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -25,7 +24,6 @@ public class AuthService {
             User createdUser = userRepository.create(username, email, hash);
 
             String token = newToken(username);
-            TokenRegistry.bindUserToken(createdUser, token);
             createdUser.setToken(token);
 
             return createdUser;
@@ -47,7 +45,6 @@ public class AuthService {
             }
 
             String token = newToken(username);
-            TokenRegistry.bindUserToken(user, token);
             user.setToken(token);
 
             return user;
@@ -57,12 +54,17 @@ public class AuthService {
     }
 
     public User verifyToken(String token) {
-        User user = TokenRegistry.get(token);
+        try {
+            String username = token.replace("-mrpToken", "");
+            Optional<User> user = userRepository.findByUsername(username);
 
-        if(user == null){
-            throw new IllegalArgumentException("Invalid or expired token");
-        } else {
-            return user;
+            if (user.isEmpty()) {
+                throw new IllegalArgumentException("Invalid token");
+            }
+
+            return user.get();
+        } catch (SQLException exception) {
+            throw new RuntimeException("Error verifying token", exception);
         }
     }
 
