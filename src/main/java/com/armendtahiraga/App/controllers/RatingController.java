@@ -56,7 +56,27 @@ public class RatingController extends Controller {
     }
 
     public Response likeRating(Request request){
-        return ok();
+        try{
+            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1].split("/like")[0]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            boolean success = ratingService.likeRating(ratingID);
+
+            if (success) {
+                JsonObject response = new JsonObject();
+                response.addProperty("message", "Rating liked");
+                return json(Status.OK, response.toString());
+            } else {
+                return ExceptionMapper.toResponse(new BadRequestException("Failed to rate media"));
+            }
+
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse((new BadRequestException("Failed to rate media: " + exception.getMessage())));
+        }
     }
 
     public Response updateRating(Request request){

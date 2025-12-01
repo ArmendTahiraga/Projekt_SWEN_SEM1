@@ -21,4 +21,13 @@ public class RatingService {
             return false;
         }
     }
+
+    public boolean likeRating(int ratingID) {
+        try{
+            return ratingRepository.likeRating(ratingID);
+        } catch (Exception exception){
+            System.out.println(exception.getMessage());
+            return false;
+        }
+    }
 }
