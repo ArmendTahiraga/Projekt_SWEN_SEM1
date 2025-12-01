@@ -48,17 +48,17 @@ public class MediaRepository {
         }
     }
 
-    public Optional<Media> createMedia(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) throws SQLException {
+    public Optional<Media> createMedia(Media media) throws SQLException {
         String statement = "insert into media (creator_user_id, title, description, media_type, release_year, age_restriction, genres) values (?, ?, ?, ?, ?, ?, ?) returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
-            preparedStatement.setInt(1, creatorUserId);
-            preparedStatement.setString(2, title);
-            preparedStatement.setString(3, description);
-            preparedStatement.setString(4, mediaType);
-            preparedStatement.setInt(5, releaseYear);
-            preparedStatement.setInt(6, ageRestriction);
-            preparedStatement.setString(7, genres.toString());
+            preparedStatement.setInt(1, media.getCreatorUserId());
+            preparedStatement.setString(2, media.getTitle());
+            preparedStatement.setString(3, media.getDescription());
+            preparedStatement.setString(4, media.getMediaType());
+            preparedStatement.setInt(5, media.getReleaseYear());
+            preparedStatement.setInt(6, media.getAgeRestriction());
+            preparedStatement.setString(7, media.getGenres().toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
@@ -78,17 +78,17 @@ public class MediaRepository {
         }
     }
 
-    public Optional<Media> updateMedia(int mediaId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) throws SQLException {
+    public Optional<Media> updateMedia(Media media) throws SQLException {
         String statement = "update media set title = ?, description = ?, media_type = ?, release_year = ?, age_restriction = ?, genres = ? where media_id = ? returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
-            preparedStatement.setString(1, title);
-            preparedStatement.setString(2, description);
-            preparedStatement.setString(3, mediaType);
-            preparedStatement.setInt(4, releaseYear);
-            preparedStatement.setInt(5, ageRestriction);
-            preparedStatement.setString(6, genres.toString());
-            preparedStatement.setInt(7, mediaId);
+            preparedStatement.setString(1, media.getTitle());
+            preparedStatement.setString(2, media.getDescription());
+            preparedStatement.setString(3, media.getMediaType());
+            preparedStatement.setInt(4, media.getReleaseYear());
+            preparedStatement.setInt(5, media.getAgeRestriction());
+            preparedStatement.setString(6, media.getGenres().toString());
+            preparedStatement.setInt(7, media.getMediaID());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();

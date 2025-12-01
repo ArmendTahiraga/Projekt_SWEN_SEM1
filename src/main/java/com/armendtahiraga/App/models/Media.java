@@ -27,6 +27,17 @@ public class Media {
         this.averageScore = 0.0;
     }
 
+    public Media(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+        this.creatorUserId = creatorUserId;
+        this.title = title;
+        this.description = description;
+        this.mediaType = mediaType;
+        this.releaseYear = releaseYear;
+        this.ageRestriction = ageRestriction;
+        this.genres = genres;
+        this.averageScore = 0.0;
+    }
+
     public int getMediaID() {
         return mediaID;
     }

@@ -30,7 +30,8 @@ public class MediaService {
 
     public Media createMedia(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
         try{
-            Optional<Media> createdMedia = mediaRepository.createMedia(creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
+            Media media = new Media(creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
+            Optional<Media> createdMedia = mediaRepository.createMedia(media);
             if (createdMedia.isEmpty()) {
                 throw new IllegalArgumentException("Media could not be created");
             }
@@ -43,7 +44,8 @@ public class MediaService {
 
     public Media updateMedia(int mediaId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
         try{
-            Optional<Media> updatedMedia = mediaRepository.updateMedia(mediaId, title, description, mediaType, releaseYear, ageRestriction, genres);
+            Media media = new Media(mediaId, 0, title, description, mediaType, releaseYear, ageRestriction, genres); // creatorUserId is not needed for update, used 0 as placeholder
+            Optional<Media> updatedMedia = mediaRepository.updateMedia(media);
             if (updatedMedia.isEmpty()) {
                 throw new IllegalArgumentException("Media could not be updated");
             }
