@@ -28,7 +28,7 @@ public class MediaController extends Controller {
     public Response getMedias(Request request){
         try{
             User principal = request.getCurrentUser();
-            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+            if (principal == null) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
@@ -57,7 +57,7 @@ public class MediaController extends Controller {
             }
 
             User principal = request.getCurrentUser();
-            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+            if (principal == null) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
@@ -94,7 +94,7 @@ public class MediaController extends Controller {
             int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
 
             User principal = request.getCurrentUser();
-            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+            if (principal == null) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
@@ -114,7 +114,7 @@ public class MediaController extends Controller {
             int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
 
             User principal = request.getCurrentUser();
-            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+            if (principal == null) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
@@ -138,7 +138,7 @@ public class MediaController extends Controller {
             }
 
             User principal = request.getCurrentUser();
-            if (principal == null && Objects.equals(principal.getUsername(), request.getCurrentUser().getUsername())) {
+            if (principal == null) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
