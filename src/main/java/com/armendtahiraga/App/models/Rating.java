@@ -10,7 +10,7 @@ public class Rating {
     public boolean confirmed;
     public int likes;
 
-    public Rating(int ratingID, int mediaID, int userID, int stars, String comment, String timestamp, int likes) {
+    public Rating(int ratingID, int mediaID, int userID, int stars, String comment, String timestamp, int likes, boolean confirmed) {
         this.ratingID = ratingID;
         this.mediaID = mediaID;
         this.userID = userID;
@@ -18,6 +18,7 @@ public class Rating {
         this.comment = comment;
         this.timestamp = timestamp;
         this.likes = likes;
+        this.confirmed = confirmed;
     }
 
     public Rating(int mediaID, int userID, int stars, String comment, String timestamp) {

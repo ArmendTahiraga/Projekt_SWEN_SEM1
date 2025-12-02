@@ -3,7 +3,9 @@ package com.armendtahiraga.App.services;
 import com.armendtahiraga.App.models.Rating;
 import com.armendtahiraga.App.repository.RatingRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public class RatingService {
     RatingRepository ratingRepository;
@@ -14,7 +16,7 @@ public class RatingService {
 
     public boolean rateMedia(int userID, int mediaID, int stars, String comment) {
         try{
-            String timestamp = LocalDate.now().toString();
+            String timestamp = LocalDateTime.now().toString();
             Rating rating = new Rating(mediaID, userID, stars, comment, timestamp);
             return ratingRepository.rateMedia(rating);
         } catch (Exception exception){
@@ -51,6 +53,19 @@ public class RatingService {
             return ratingRepository.confirmRatingComment(ratingID, creatorID);
         } catch (Exception exception){
             return false;
+        }
+    }
+
+    public List<Rating> getUserRatings(int userID) {
+        try{
+            Optional<List<Rating>> ratings = ratingRepository.getUserRatings(userID);
+            if (ratings.isEmpty()) {
+                throw new IllegalArgumentException("User has no ratings");
+            }
+
+            return ratings.get();
+        } catch (Exception exception){
+            return null;
         }
     }
 }

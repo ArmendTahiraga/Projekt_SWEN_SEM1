@@ -82,22 +82,6 @@ public class UserController extends Controller {
         }
     }
 
-    public Response getUserRatings(Request request){
-        return ok();
-    }
-
-    public Response getUserFavorites(Request request){
-        return ok();
-    }
-
-    public Response addMediaToFavorites(Request request){
-        return ok();
-    }
-
-    public Response removeMediaFromFavorites(Request request){
-        return ok();
-    }
-
     public Response getRecommendations(Request request){
         return ok();
     }

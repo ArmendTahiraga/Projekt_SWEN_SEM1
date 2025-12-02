@@ -32,7 +32,7 @@ public class UserService {
             if (updatedUser.isEmpty()) {
                 throw new IllegalArgumentException("User not found for update");
             }
-            System.out.println(updatedUser.get().getFavoriteGenre());
+
             return updatedUser.get();
         } catch (SQLException exception){
             throw new RuntimeException("DB error during updating user profile");

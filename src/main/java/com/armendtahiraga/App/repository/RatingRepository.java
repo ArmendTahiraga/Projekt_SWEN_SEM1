@@ -5,7 +5,11 @@ import com.armendtahiraga.App.models.Rating;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class RatingRepository {
     Connection connection;
@@ -15,18 +19,18 @@ public class RatingRepository {
     }
 
     public boolean rateMedia(Rating rating) throws SQLException {
-        String statement = "insert into rating (user_id, media_id, stars, comment) values (?, ?, ?, ?)";
+        String statement = "insert into rating (user_id, media_id, stars, comment, timestamp) values (?, ?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, rating.getUserID());
             preparedStatement.setInt(2, rating.getMediaID());
             preparedStatement.setInt(3, rating.getStars());
             preparedStatement.setString(4, rating.getComment());
+            preparedStatement.setString(5, rating.getTimestamp());
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception exception){
-            System.out.println(exception.getMessage());
             throw new SQLException("Error rating media", exception);
         }
     }
@@ -41,7 +45,6 @@ public class RatingRepository {
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception exception){
-            System.out.println(exception.getMessage());
             throw new SQLException("Error liking rating", exception);
         }
     }
@@ -88,5 +91,36 @@ public class RatingRepository {
         } catch (Exception exception){
             throw new SQLException("Error confirming rating comment", exception);
         }
+    }
+
+    public Optional<List<Rating>> getUserRatings(int userID) throws SQLException {
+        try{
+            String statement = "select * from rating where user_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, userID);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Rating> ratings = new ArrayList<>();
+            while (resultSet.next()) {
+                ratings.add(mapRating(resultSet));
+            }
+
+            return ratings.isEmpty() ? Optional.empty() : Optional.of(ratings);
+        } catch (Exception exception){
+            throw new SQLException("Error fetching user ratings", exception);
+        }
+    }
+
+    private Rating mapRating(ResultSet resultSet) throws SQLException {
+        int ratingId = resultSet.getInt("rating_id");
+        int userId = resultSet.getInt("user_id");
+        int mediaId = resultSet.getInt("media_id");
+        int stars = resultSet.getInt("stars");
+        String timestamp = resultSet.getString("timestamp");
+        String comment = resultSet.getString("comment");
+        int likes = resultSet.getInt("likes");
+        boolean confirmed = resultSet.getBoolean("confirmed");
+
+        return new Rating(ratingId, mediaId, userId, stars, comment, timestamp, likes, confirmed);
     }
 }

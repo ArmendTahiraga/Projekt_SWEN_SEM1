@@ -3,13 +3,17 @@ package com.armendtahiraga.App.controllers;
 import com.armendtahiraga.App.exceptions.BadRequestException;
 import com.armendtahiraga.App.exceptions.ExceptionMapper;
 import com.armendtahiraga.App.exceptions.UnauthorizedException;
+import com.armendtahiraga.App.models.Rating;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.services.RatingService;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.util.List;
 
 public class RatingController extends Controller {
     private RatingService ratingService;
@@ -162,5 +166,45 @@ public class RatingController extends Controller {
         } catch (Exception exception){
             return ExceptionMapper.toResponse((new BadRequestException("Failed to confirm rating comment: " + exception.getMessage())));
         }
+    }
+
+    public Response getUserRatings(Request request){
+        try{
+            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/ratings")[0]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null || principal.getUserID() != userID) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            List<Rating> ratings = ratingService.getUserRatings(userID);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("message", "Rating history");
+
+            JsonArray ratingArray = new JsonArray();
+            for (Rating rating : ratings) {
+                ratingArray.add(ratingToJson(rating));
+            }
+            response.add("ratings", ratingArray);
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse(new BadRequestException("Failed to get user rating history: " + exception.getMessage()));
+        }
+    }
+
+    private JsonObject ratingToJson(Rating rating){
+        JsonObject json = new JsonObject();
+        json.addProperty("ratingID", rating.getRatingID());
+        json.addProperty("mediaID", rating.getMediaID());
+        json.addProperty("userID", rating.getUserID());
+        json.addProperty("stars", rating.getStars());
+        json.addProperty("comment", rating.getComment());
+        json.addProperty("timestamp", rating.getTimestamp());
+        json.addProperty("confirmed", rating.isConfirmed());
+        json.addProperty("likes", rating.getLikes());
+
+        return json;
     }
 }
