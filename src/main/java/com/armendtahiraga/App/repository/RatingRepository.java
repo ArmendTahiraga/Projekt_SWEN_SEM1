@@ -44,4 +44,19 @@ public class RatingRepository {
             throw new SQLException("Error liking rating", exception);
         }
     }
+
+    public boolean updateRating(int ratingID, int stars, String comment) throws SQLException {
+        String statement = "update rating set stars = ?, comment = ? where rating_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, stars);
+            preparedStatement.setString(2, comment);
+            preparedStatement.setInt(3, ratingID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception exception){
+            throw new SQLException("Error updating rating", exception);
+        }
+    }
 }
