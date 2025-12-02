@@ -45,4 +45,12 @@ public class RatingService {
             return false;
         }
     }
+
+    public boolean confirmRatingComment(int ratingID, int creatorID) {
+        try{
+            return ratingRepository.confirmRatingComment(ratingID, creatorID);
+        } catch (Exception exception){
+            return false;
+        }
+    }
 }

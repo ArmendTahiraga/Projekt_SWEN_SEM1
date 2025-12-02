@@ -75,4 +75,18 @@ public class RatingRepository {
             throw new SQLException("Error deleting rating", exception);
         }
     }
+
+    public boolean confirmRatingComment(int ratingID, int creatorID) throws SQLException {
+        String statement = "update rating set confirmed = true where rating_id = ? and user_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, ratingID);
+            preparedStatement.setInt(2, creatorID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception exception){
+            throw new SQLException("Error confirming rating comment", exception);
+        }
+    }
 }

@@ -80,7 +80,7 @@ public class MRPApplication implements Application {
         router.addRoute("POST", "/api/ratings/{ratingId}/like", ratingController::likeRating);
         router.addRoute("PUT", "/api/ratings/{ratingId}", ratingController::updateRating);
         router.addRoute("DELETE", "/api/ratings/{ratingId}", ratingController::deleteRating);
-        router.addRoute("POST", "/api/ratings/{ratingId}/confirm", ratingController::confirmRating);
+        router.addRoute("POST", "/api/ratings/{ratingId}/confirm", ratingController::confirmRatingComment);
     }
 
     private void registerExceptions(){

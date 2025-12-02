@@ -130,7 +130,6 @@ public class RatingController extends Controller {
             if (success) {
                 JsonObject response = new JsonObject();
                 response.addProperty("message", "Rating deleted");
-                System.out.println("Rating deleted successfully");
                 return json(Status.DELETED, response.toString());
             } else {
                 return ExceptionMapper.toResponse(new BadRequestException("Failed to delete media rating"));
@@ -141,7 +140,27 @@ public class RatingController extends Controller {
         }
     }
 
-    public Response confirmRating(Request request){
-        return ok();
+    public Response confirmRatingComment(Request request){
+        try{
+            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1].split("/confirm")[0]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            boolean success = ratingService.confirmRatingComment(ratingID, principal.getUserID());
+
+            if (success) {
+                JsonObject response = new JsonObject();
+                response.addProperty("message", "Rating comment confirmed");
+                return json(Status.OK, response.toString());
+            } else {
+                return ExceptionMapper.toResponse(new BadRequestException("Failed to confirm rating comment"));
+            }
+
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse((new BadRequestException("Failed to confirm rating comment: " + exception.getMessage())));
+        }
     }
 }
