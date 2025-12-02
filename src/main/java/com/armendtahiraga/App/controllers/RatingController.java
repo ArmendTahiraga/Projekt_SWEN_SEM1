@@ -101,7 +101,7 @@ public class RatingController extends Controller {
                 return ExceptionMapper.toResponse(new BadRequestException("Invalid rating data"));
             }
 
-            boolean success = ratingService.updateRating(ratingID, stars, comment);
+            boolean success = ratingService.updateRating(ratingID, principal.getUserID(), stars, comment);
 
             if (success) {
                 JsonObject response = new JsonObject();
@@ -117,7 +117,28 @@ public class RatingController extends Controller {
     }
 
     public Response deleteRating(Request request){
-        return ok();
+        try{
+            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1]);
+
+            User principal = request.getCurrentUser();
+            if (principal == null) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            boolean success = ratingService.deleteRating(ratingID, principal.getUserID());
+
+            if (success) {
+                JsonObject response = new JsonObject();
+                response.addProperty("message", "Rating deleted");
+                System.out.println("Rating deleted successfully");
+                return json(Status.DELETED, response.toString());
+            } else {
+                return ExceptionMapper.toResponse(new BadRequestException("Failed to delete media rating"));
+            }
+
+        } catch (Exception exception){
+            return ExceptionMapper.toResponse((new BadRequestException("Failed to delete media rating: " + exception.getMessage())));
+        }
     }
 
     public Response confirmRating(Request request){

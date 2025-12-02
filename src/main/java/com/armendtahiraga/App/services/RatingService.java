@@ -30,9 +30,17 @@ public class RatingService {
         }
     }
 
-    public boolean updateRating(int ratingID, int stars, String comment) {
+    public boolean updateRating(int ratingID, int creatorID, int stars, String comment) {
         try{
-            return ratingRepository.updateRating(ratingID, stars, comment);
+            return ratingRepository.updateRating(ratingID, creatorID, stars, comment);
+        } catch (Exception exception){
+            return false;
+        }
+    }
+
+    public boolean deleteRating(int ratingID, int creatorID) {
+        try{
+            return ratingRepository.deleteRating(ratingID, creatorID);
         } catch (Exception exception){
             return false;
         }

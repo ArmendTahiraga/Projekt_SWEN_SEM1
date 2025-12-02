@@ -15,7 +15,7 @@ public class RatingRepository {
     }
 
     public boolean rateMedia(Rating rating) throws SQLException {
-        String statement = "insert into ratings (user_id, media_id, stars, comment) values (?, ?, ?, ?)";
+        String statement = "insert into rating (user_id, media_id, stars, comment) values (?, ?, ?, ?)";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, rating.getUserID());
@@ -26,6 +26,7 @@ public class RatingRepository {
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception exception){
+            System.out.println(exception.getMessage());
             throw new SQLException("Error rating media", exception);
         }
     }
@@ -45,18 +46,33 @@ public class RatingRepository {
         }
     }
 
-    public boolean updateRating(int ratingID, int stars, String comment) throws SQLException {
-        String statement = "update rating set stars = ?, comment = ? where rating_id = ?";
+    public boolean updateRating(int ratingID, int creatorID, int stars, String comment) throws SQLException {
+        String statement = "update rating set stars = ?, comment = ? where rating_id = ? and user_id = ?";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, stars);
             preparedStatement.setString(2, comment);
             preparedStatement.setInt(3, ratingID);
+            preparedStatement.setInt(4, creatorID);
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception exception){
             throw new SQLException("Error updating rating", exception);
+        }
+    }
+
+    public boolean deleteRating(int ratingID, int creatorID) throws SQLException {
+        String statement = "delete from rating where rating_id = ? and user_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, ratingID);
+            preparedStatement.setInt(2, creatorID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception exception){
+            throw new SQLException("Error deleting rating", exception);
         }
     }
 }
