@@ -8,4 +8,12 @@ public class FavoritesService {
     public FavoritesService(FavoritesRepository favoritesRepository) {
         this.favoritesRepository = favoritesRepository;
     }
+
+    public boolean addMediaToFavorites(int userID, int mediaID) {
+        try{
+            return favoritesRepository.addMediaToFavorites(userID, mediaID);
+        } catch (Exception exception){
+            return false;
+        }
+    }
 }
