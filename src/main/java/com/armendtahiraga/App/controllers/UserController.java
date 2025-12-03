@@ -9,8 +9,11 @@ import com.armendtahiraga.App.services.UserService;
 import com.armendtahiraga.Server.Request;
 import com.armendtahiraga.Server.Response;
 import com.armendtahiraga.Server.Status;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.util.List;
 
 public class UserController extends Controller {
     private UserService userService;
@@ -35,6 +38,7 @@ public class UserController extends Controller {
             response.addProperty("username", user.getUsername());
             response.addProperty("email", user.getEmail());
             response.addProperty("favoriteGenre", user.getFavoriteGenre());
+
             if (user.getFavoriteMedias() != null && !user.getFavoriteMedias().isEmpty()){
                 response.addProperty("favoriteMedias", user.getFavoriteMedias().toString());
             } else {
@@ -87,6 +91,37 @@ public class UserController extends Controller {
     }
 
     public Response getLeaderboard(Request request){
-        return ok();
+        try{
+            User principal = request.getCurrentUser();
+            if (principal == null ) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            List<User> leaderboard = userService.getLeaderboard();
+
+            JsonObject response = new JsonObject();
+            response.addProperty("message", "Leaderboard list");
+            JsonArray leaderboardArray = new JsonArray();
+
+            for (User user : leaderboard){
+                leaderboardArray.add(turnUserToJson(user));
+            }
+
+            response.add("leaderboard", leaderboardArray);
+
+            return json(Status.OK, response.toString());
+        } catch (Exception exception) {
+            return ExceptionMapper.toResponse(new DatabaseException("Failed get user profile: " + exception.getMessage()));
+        }
+    }
+
+    private JsonObject turnUserToJson(User user){
+        JsonObject userJson = new JsonObject();
+        userJson.addProperty("id", user.getUserID());
+        userJson.addProperty("username", user.getUsername());
+        userJson.addProperty("email", user.getEmail());
+        userJson.addProperty("favoriteGenre", user.getFavoriteGenre());
+
+        return userJson;
     }
 }

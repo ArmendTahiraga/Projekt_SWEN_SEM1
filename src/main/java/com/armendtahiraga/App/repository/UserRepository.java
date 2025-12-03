@@ -4,6 +4,8 @@ import com.armendtahiraga.App.database.Database;
 import com.armendtahiraga.App.models.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserRepository {
@@ -53,6 +55,7 @@ public class UserRepository {
 
             return mapUser(resultSet);
         } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
             throw new SQLException("Error creating user", exception);
         }
     }
@@ -70,6 +73,22 @@ public class UserRepository {
             return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
         } catch (SQLException exception) {
             throw new SQLException("Error updating user", exception);
+        }
+    }
+
+    public Optional<List<User>> getLeaderboard() throws SQLException {
+        String statement = "select user_id, username, password_hash, email, favorite_genre from \"user\" order by (select count(*) from rating where rating.user_id = \"user\".user_id) desc limit 10";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<User> leaderboard = new ArrayList<>();
+            while (resultSet.next()) {
+                leaderboard.add(mapUser(resultSet));
+            }
+
+            return leaderboard.isEmpty() ? Optional.empty() : Optional.of(leaderboard);
+        } catch (SQLException exception) {
+            throw new SQLException("Error getting leaderboard", exception);
         }
     }
 

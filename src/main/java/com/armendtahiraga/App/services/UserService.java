@@ -1,9 +1,11 @@
 package com.armendtahiraga.App.services;
 
+import com.armendtahiraga.App.exceptions.NotFoundException;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class UserService {
@@ -36,6 +38,20 @@ public class UserService {
             return updatedUser.get();
         } catch (SQLException exception){
             throw new RuntimeException("DB error during updating user profile");
+        }
+    }
+
+    public List<User> getLeaderboard(){
+        try{
+            Optional<List<User>> leaderboard = userRepository.getLeaderboard();
+
+            if (leaderboard.isEmpty()) {
+                throw new NotFoundException("No leaderboard data found");
+            }
+
+            return leaderboard.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during fetching leaderboard");
         }
     }
 }
