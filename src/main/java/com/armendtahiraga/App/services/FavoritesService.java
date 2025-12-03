@@ -35,4 +35,12 @@ public class FavoritesService {
             return false;
         }
     }
+
+    public boolean removeMediaFromFavorites(int userID, int mediaID) {
+        try{
+            return favoritesRepository.removeMediaFromFavorites(userID, mediaID);
+        } catch (Exception exception){
+            return false;
+        }
+    }
 }

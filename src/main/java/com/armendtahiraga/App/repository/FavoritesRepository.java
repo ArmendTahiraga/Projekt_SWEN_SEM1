@@ -50,6 +50,20 @@ public class FavoritesRepository {
         }
     }
 
+    public boolean removeMediaFromFavorites(int userID, int mediaID) {
+        String statement = "delete from favorite where user_id = ? and media_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(2, mediaID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception exception){
+            return false;
+        }
+    }
+
     private Media mapMedia(ResultSet resultSet) throws SQLException {
         int mediaID = resultSet.getInt("media_id");
         int creatorUserId = resultSet.getInt("creator_user_id");
