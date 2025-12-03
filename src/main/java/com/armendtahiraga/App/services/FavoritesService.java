@@ -1,12 +1,31 @@
 package com.armendtahiraga.App.services;
 
+import com.armendtahiraga.App.models.Media;
 import com.armendtahiraga.App.repository.FavoritesRepository;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class FavoritesService {
     FavoritesRepository favoritesRepository;
 
     public FavoritesService(FavoritesRepository favoritesRepository) {
         this.favoritesRepository = favoritesRepository;
+    }
+
+    public List<Media> getUserFavorites(int userID) throws SQLException {
+        try{
+            Optional<List<Media>> favoriteMedias = favoritesRepository.getUserFavorites(userID);
+
+            if (favoriteMedias.isEmpty()) {
+                throw new IllegalArgumentException("No favorites found");
+            }
+
+            return favoriteMedias.get();
+        } catch (SQLException exception){
+            throw new SQLException("DB error during fetching user favorites", exception);
+        }
     }
 
     public boolean addMediaToFavorites(int userID, int mediaID) {
