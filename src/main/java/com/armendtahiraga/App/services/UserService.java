@@ -1,6 +1,7 @@
 package com.armendtahiraga.App.services;
 
 import com.armendtahiraga.App.exceptions.NotFoundException;
+import com.armendtahiraga.App.models.Media;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.repository.UserRepository;
 
@@ -52,6 +53,20 @@ public class UserService {
             return leaderboard.get();
         } catch (SQLException exception){
             throw new RuntimeException("DB error during fetching leaderboard");
+        }
+    }
+
+    public List<Media> getRecommendations(int userID, String type){
+        try{
+            Optional<List<Media>> recommendations = userRepository.getRecommendations(userID, type);
+
+            if (recommendations.isEmpty()) {
+                throw new NotFoundException("No recommendations found");
+            }
+
+            return recommendations.get();
+        } catch (SQLException exception){
+            throw new RuntimeException("DB error during fetching recommendations");
         }
     }
 }

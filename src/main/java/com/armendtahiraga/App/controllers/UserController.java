@@ -4,6 +4,7 @@ import com.armendtahiraga.App.exceptions.BadRequestException;
 import com.armendtahiraga.App.exceptions.DatabaseException;
 import com.armendtahiraga.App.exceptions.ExceptionMapper;
 import com.armendtahiraga.App.exceptions.UnauthorizedException;
+import com.armendtahiraga.App.models.Media;
 import com.armendtahiraga.App.models.User;
 import com.armendtahiraga.App.services.UserService;
 import com.armendtahiraga.Server.Request;
@@ -87,7 +88,42 @@ public class UserController extends Controller {
     }
 
     public Response getRecommendations(Request request){
-        return ok();
+        try {
+            int userID = Integer.parseInt(request.getPathParam("userId"));
+
+            User principal = request.getCurrentUser();
+            if (principal == null || principal.getUserID() != userID) {
+                return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
+            }
+
+            String type = request.getQueryParams().get("type");
+
+            if (type == null || type.isEmpty()) {
+                return ExceptionMapper.toResponse(new BadRequestException("Recommendation type is missing"));
+            }
+
+            if (!type.equals("genre") && !type.equals("content")) {
+                return ExceptionMapper.toResponse(
+                        new BadRequestException("Recommendation type must be 'genre' or 'content'")
+                );
+            }
+
+            List<Media> recommendations = userService.getRecommendations(userID, type);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("message", "Recommended media");
+            response.addProperty("type", type);
+
+            JsonArray mediaArray = new JsonArray();
+            for (Media media : recommendations) {
+                mediaArray.add(mediaToJson(media));
+            }
+            response.add("recommendations", mediaArray);
+
+            return json(Status.OK, response.toString());
+        }catch (Exception exception) {
+            return ExceptionMapper.toResponse(new DatabaseException("Failed get recommendations: " + exception.getMessage()));
+        }
     }
 
     public Response getLeaderboard(Request request){
@@ -123,5 +159,28 @@ public class UserController extends Controller {
         userJson.addProperty("favoriteGenre", user.getFavoriteGenre());
 
         return userJson;
+    }
+
+    private JsonObject mediaToJson(Media media) {
+        JsonObject json = new JsonObject();
+        json.addProperty("mediaID", media.getMediaID());
+        json.addProperty("creatorUserId", media.getCreatorUserId());
+        json.addProperty("title", media.getTitle());
+        json.addProperty("description", media.getDescription());
+        json.addProperty("mediaType", media.getMediaType());
+        json.addProperty("releaseYear", media.getReleaseYear());
+        json.addProperty("ageRestriction", media.getAgeRestriction());
+
+        if (media.getGenres() != null) {
+            JsonArray genresArray = new JsonArray();
+            for (String genre : media.getGenres()) {
+                genresArray.add(genre);
+            }
+            json.add("genres", genresArray);
+        } else {
+            json.add("genres", new JsonArray());
+        }
+
+        return json;
     }
 }
