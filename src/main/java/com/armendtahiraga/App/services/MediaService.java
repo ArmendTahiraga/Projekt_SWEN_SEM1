@@ -5,6 +5,7 @@ import com.armendtahiraga.App.repository.MediaRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MediaService {
@@ -14,9 +15,9 @@ public class MediaService {
         this.mediaRepository = mediaRepository;
     }
 
-    public List<Media> getMedias() {
+    public List<Media> getMedias(Map<String, ?> filters) {
         try{
-            Optional<List<Media>> medias = mediaRepository.getMedias();
+            Optional<List<Media>> medias = mediaRepository.getMedias(filters);
 
             if (medias.isEmpty()){
                 throw new IllegalArgumentException("No media found");
@@ -24,6 +25,7 @@ public class MediaService {
 
             return medias.get();
         } catch (SQLException exception){
+            System.out.println(exception.getMessage());
             throw new RuntimeException("DB error during fetching medias");
         }
     }

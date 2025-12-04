@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MediaRepository {
@@ -18,19 +19,66 @@ public class MediaRepository {
         this.connection = Database.getConnection();
     }
 
-    public Optional<List<Media>> getMedias() throws SQLException {
-        String statement = "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres from media";
+    public Optional<List<Media>> getMedias(Map<String, ?> filters) throws SQLException {
+        StringBuilder statement = new StringBuilder(
+                "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres from media"
+        );
+
+        List<String> conditions = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+
+        String title = filters.get("title").toString();
+        if (!title.isBlank()) {
+            conditions.add("LOWER(title) LIKE ?");
+            params.add("%" + title.toLowerCase() + "%");
+        }
+
+        String genre = filters.get("genre").toString();
+        if (!genre.isBlank()) {
+            conditions.add("? = ANY(genres)");
+            params.add(genre);
+        }
+
+        String mediaType = filters.get("mediaType").toString();
+        if (!mediaType.isBlank()) {
+            conditions.add("media_type = ?");
+            params.add(mediaType);
+        }
+
+        int releaseYear = Integer.parseInt(filters.get("releaseYear").toString());
+        if (releaseYear > 0) {
+            conditions.add("release_year = ?");
+            params.add(releaseYear);
+        }
+
+        int ageRestriction = Integer.parseInt(filters.get("ageRestriction").toString());
+        if (ageRestriction >= 0) {
+            conditions.add("age_restriction = ?");
+            params.add(ageRestriction);
+        }
+
+        if (!conditions.isEmpty()) {
+            statement.append(" WHERE ");
+            statement.append(String.join(" AND ", conditions));
+        }
+
         try{
-            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            PreparedStatement preparedStatement = connection.prepareStatement(statement.toString());
+
+            for (int i = 0; i < params.size(); i++) {
+                preparedStatement.setObject(i + 1, params.get(i));
+            }
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<Media> medias = new ArrayList<>();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 medias.add(mapMedia(resultSet));
             }
 
             return medias.isEmpty() ? Optional.empty() : Optional.of(medias);
-        } catch (SQLException exception){
+        } catch (Exception exception){
+            System.out.println("Exception in getMedias: " + exception.getMessage());
             throw new SQLException("Error getting medias", exception);
         }
     }

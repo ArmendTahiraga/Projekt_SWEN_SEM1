@@ -16,6 +16,7 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class MediaController extends Controller {
@@ -32,7 +33,28 @@ public class MediaController extends Controller {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 
-            List<Media> medias = mediaService.getMedias();
+            String title = request.getQueryParams().get("title") != null ? request.getQueryParams().get("title") : "";
+            String genre = request.getQueryParams().get("genre") != null ? request.getQueryParams().get("genre") : "";
+            String mediaType = request.getQueryParams().get("mediaType") != null ? request.getQueryParams().get("mediaType") : "";
+            int releaseYear = request.getQueryParams().get("releaseYear") != null ? Integer.parseInt(request.getQueryParams().get("releaseYear")) : -1;
+            int ageRestriction = request.getQueryParams().get("ageRestriction") != null ? Integer.parseInt(request.getQueryParams().get("ageRestriction")) : -1;
+            int rating = request.getQueryParams().get("rating") != null ? Integer.parseInt(request.getQueryParams().get("rating")) : -1;
+            String sortBy = request.getQueryParams().get("sortBy") != null ? request.getQueryParams().get("sortBy") : "none";
+
+            if (!sortBy.equals("title") && !sortBy.equals("year") && !sortBy.equals("score") && !sortBy.equals("none")) {
+                return ExceptionMapper.toResponse(new BadRequestException("Recommendation type must be 'genre' or 'content'"));
+            }
+
+            Map<String, ?> filters = Map.of(
+                    "title", title,
+                    "genre", genre,
+                    "mediaType", mediaType,
+                    "releaseYear", releaseYear,
+                    "ageRestriction", ageRestriction,
+                    "rating", rating
+            );
+
+            List<Media> medias = mediaService.getMedias(filters);
 
             JsonObject response = new JsonObject();
             response.addProperty("message", "Medias fetched successfully");

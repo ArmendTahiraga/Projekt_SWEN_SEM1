@@ -103,9 +103,7 @@ public class UserController extends Controller {
             }
 
             if (!type.equals("genre") && !type.equals("content")) {
-                return ExceptionMapper.toResponse(
-                        new BadRequestException("Recommendation type must be 'genre' or 'content'")
-                );
+                return ExceptionMapper.toResponse(new BadRequestException("Recommendation type must be 'genre' or 'content'"));
             }
 
             List<Media> recommendations = userService.getRecommendations(userID, type);
