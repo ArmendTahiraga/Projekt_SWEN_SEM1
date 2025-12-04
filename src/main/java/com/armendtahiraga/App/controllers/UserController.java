@@ -25,7 +25,7 @@ public class UserController extends Controller {
 
     public Response getUserProfile(Request request){
         try{
-            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/profile")[0]);
+            int userID = Integer.parseInt(request.getPathParam("userId"));
 
             User principal = request.getCurrentUser();
             if (principal == null || principal.getUserID() != userID) {
@@ -54,11 +54,11 @@ public class UserController extends Controller {
 
     public Response updateUserProfile(Request request){
         try{
+            int userID = Integer.parseInt(request.getPathParam("userId"));
+
             if (request.getBody() == null || request.getBody().isEmpty()) {
                 return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));
             }
-
-            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/profile")[0]);
 
             User principal = request.getCurrentUser();
             if (principal == null || principal.getUserID() != userID) {

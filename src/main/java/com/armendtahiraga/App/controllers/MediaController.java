@@ -113,7 +113,7 @@ public class MediaController extends Controller {
 
     public Response deleteMedia(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -133,7 +133,7 @@ public class MediaController extends Controller {
 
     public Response getMediaById(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -153,7 +153,7 @@ public class MediaController extends Controller {
 
     public Response updateMedia(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             if (request.getBody() == null || request.getBody().isEmpty()) {
                 return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));

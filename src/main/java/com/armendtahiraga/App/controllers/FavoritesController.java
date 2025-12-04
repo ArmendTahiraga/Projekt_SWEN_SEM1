@@ -24,7 +24,7 @@ public class FavoritesController extends Controller {
 
     public Response getUserFavorites(Request request){
         try{
-            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/favorites")[0]);
+            int userID = Integer.parseInt(request.getPathParam("userId"));
 
             User principal = request.getCurrentUser();
             if (principal == null && principal.getUserID() != userID) {
@@ -51,7 +51,7 @@ public class FavoritesController extends Controller {
 
     public Response addMediaToFavorites(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1].split("/favorite")[0]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -75,7 +75,7 @@ public class FavoritesController extends Controller {
 
     public Response removeMediaFromFavorites(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1].split("/favorite")[0]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {

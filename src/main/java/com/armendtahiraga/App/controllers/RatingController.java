@@ -24,7 +24,7 @@ public class RatingController extends Controller {
 
     public Response rateMedia(Request request){
         try{
-            int mediaID = Integer.parseInt(request.getPath().split("/media/")[1].split("/rate")[0]);
+            int mediaID = Integer.parseInt(request.getPathParam("mediaId"));
 
             if (request.getBody() == null || request.getBody().isEmpty()) {
                 return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));
@@ -61,7 +61,7 @@ public class RatingController extends Controller {
 
     public Response likeRating(Request request){
         try{
-            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1].split("/like")[0]);
+            int ratingID = Integer.parseInt(request.getPathParam("ratingId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -85,7 +85,7 @@ public class RatingController extends Controller {
 
     public Response updateRating(Request request){
         try{
-            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1]);
+            int ratingID = Integer.parseInt(request.getPathParam("ratingId"));
 
             if (request.getBody() == null || request.getBody().isEmpty()) {
                 return ExceptionMapper.toResponse(new BadRequestException("Request body is missing"));
@@ -122,7 +122,7 @@ public class RatingController extends Controller {
 
     public Response deleteRating(Request request){
         try{
-            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1]);
+            int ratingID = Integer.parseInt(request.getPathParam("ratingId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -146,7 +146,7 @@ public class RatingController extends Controller {
 
     public Response confirmRatingComment(Request request){
         try{
-            int ratingID = Integer.parseInt(request.getPath().split("/ratings/")[1].split("/confirm")[0]);
+            int ratingID = Integer.parseInt(request.getPathParam("ratingId"));
 
             User principal = request.getCurrentUser();
             if (principal == null) {
@@ -170,7 +170,7 @@ public class RatingController extends Controller {
 
     public Response getUserRatings(Request request){
         try{
-            int userID = Integer.parseInt(request.getPath().split("/users/")[1].split("/ratings")[0]);
+            int userID = Integer.parseInt(request.getPathParam("userId"));
 
             User principal = request.getCurrentUser();
             if (principal == null || principal.getUserID() != userID) {
