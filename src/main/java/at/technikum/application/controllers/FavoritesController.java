@@ -27,7 +27,7 @@ public class FavoritesController extends Controller {
             int userID = Integer.parseInt(request.getPathParam("userId"));
 
             User principal = request.getCurrentUser();
-            if (principal == null && principal.getUserID() != userID) {
+            if (principal == null || principal.getUserID() != userID) {
                 return ExceptionMapper.toResponse(new UnauthorizedException("Invalid user credentials"));
             }
 

@@ -35,8 +35,8 @@ public class MediaRepository {
 
         String genre = filters.get("genre").toString();
         if (!genre.isBlank()) {
-            conditions.add("? = ANY(genres)");
-            params.add(genre);
+            conditions.add("LOWER(genres) LIKE ?");
+            params.add("%" + genre.toLowerCase() + "%");
         }
 
         String mediaType = filters.get("mediaType").toString();
