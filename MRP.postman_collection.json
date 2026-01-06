@@ -22,8 +22,13 @@
 				},
 				"url": {
 					"raw": "{{api}}/users/login",
-					"host": ["{{api}}"],
-					"path": ["users", "login"]
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
 				}
 			},
 			"response": []
@@ -35,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"Mendi\", \"email\": \"armend@tahiraga\", \"password\": \"armend\"}",
+					"raw": "{\"username\": \"Menduh\", \"email\": \"armennd@tahiraga\", \"password\": \"armend\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -44,14 +49,19 @@
 				},
 				"url": {
 					"raw": "{{api}}/users/register",
-					"host": ["{{api}}"],
-					"path": ["users", "register"]
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get user Profile",
+			"name": "Get user profile",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -63,8 +73,14 @@
 				],
 				"url": {
 					"raw": "{{api}}/users/9/profile",
-					"host": ["{{api}}"],
-					"path": ["users", "9", "profile"]
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"9",
+						"profile"
+					]
 				}
 			},
 			"response": []
@@ -91,8 +107,469 @@
 				},
 				"url": {
 					"raw": "{{api}}/users/9/profile",
-					"host": ["{{api}}"],
-					"path": ["users", "9", "profile"]
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"9",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create media",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Menduh-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"movie4\",\n  \"description\": \"movidddsiie\",\n  \"mediaType\": \"seriddsdes\",\n  \"releaseYear\": 2000015,\n  \"genres\": [\n    \"action\"\n  ],\n  \"ageRestriction\": 18\n}"
+				},
+				"url": {
+					"raw": "{{api}}/media",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get medias",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/media?title=movie&ageRestriction=18",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "movie"
+						},
+						{
+							"key": "ageRestriction",
+							"value": "18"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get media by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/media/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete media",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/media/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update media",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"movies\",\n  \"description\": \"moviiie\",\n  \"mediaType\": \"serides\",\n  \"releaseYear\": 2115,\n  \"genres\": [\n    \"horror\",\n    \"thriller\",\n    \"comedy\"\n  ],\n  \"ageRestriction\": 18\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/media/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rate media",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Mendi-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"stars\": 2, \"comment\": \"meh\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/media/5/rate",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"5",
+						"rate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Like rating",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"Armend\", \"password\": \"armend\"}"
+				},
+				"url": {
+					"raw": "{{api}}/ratings/10/like",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ratings",
+						"10",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update rating",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"stars\": 3, \"comment\": \"Super bro\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/ratings/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ratings",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete rating",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/ratings/10",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ratings",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm rating comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/ratings/7/confirm",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ratings",
+						"7",
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get rating history",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/users/9/ratings",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"9",
+						"ratings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add media to favorites",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/media/4/favorite",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"4",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get favorite medias",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/users/9/favorites",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"9",
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove media from favorites",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/media/1/favorite",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"media",
+						"1",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get leaderboard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Armend-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/leaderboard",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get recommendations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer Menduh-mrpToken",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/users/13/recommendations?type=genre",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"users",
+						"13",
+						"recommendations"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "genre"
+						}
+					]
 				}
 			},
 			"response": []
@@ -105,7 +582,9 @@
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		},
 		{
@@ -114,14 +593,16 @@
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		}
 	],
 	"variable": [
 		{
 			"key": "api",
-			"value": "http://localhost:8080/api"
+			"value": ""
 		}
 	]
 }
