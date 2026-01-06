@@ -9,7 +9,7 @@ public class Database {
 
     public static void connect(){
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://db.puafiywkuaruycrwjdsk.supabase.co:5432/postgres?user=postgres&password=713_ArmendTahiraga_SWEN");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mrp", "mrp_user", "mrp_pass");
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
         }
