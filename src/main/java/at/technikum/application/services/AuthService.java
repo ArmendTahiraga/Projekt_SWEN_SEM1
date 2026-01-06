@@ -1,0 +1,74 @@
+package at.technikum.application.services;
+
+import at.technikum.application.models.User;
+import at.technikum.application.repository.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.sql.SQLException;
+import java.util.Optional;
+
+public class AuthService {
+    UserRepository userRepository;
+
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User register(String username, String email, String password){
+        try {
+            if (userRepository.findByUsername(username).isPresent()) {
+                throw new IllegalArgumentException("Username already taken");
+            }
+
+            String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+            User createdUser = userRepository.create(username, email, hash);
+
+            String token = newToken(username);
+            createdUser.setToken(token);
+
+            return createdUser;
+        } catch (SQLException exception) {
+            throw new RuntimeException("Error registering user" + exception);
+        }
+    }
+
+    public User login(String username, String password) {
+        try {
+            Optional<User> userOptional = userRepository.findByUsername(username);
+            if (userOptional.isEmpty()) {
+                throw new IllegalArgumentException("Invalid username or password");
+            }
+
+            User user = userOptional.get();
+            if (user.getPasswordHash() == null || !BCrypt.checkpw(password, user.getPasswordHash())) {
+                throw new IllegalArgumentException("Invalid username or password");
+            }
+
+            String token = newToken(username);
+            user.setToken(token);
+
+            return user;
+        } catch (SQLException exception) {
+            throw new RuntimeException("DB error during login", exception);
+        }
+    }
+
+    public User verifyToken(String token) {
+        try {
+            String username = token.replace("-mrpToken", "");
+            Optional<User> user = userRepository.findByUsername(username);
+
+            if (user.isEmpty()) {
+                throw new IllegalArgumentException("Invalid token");
+            }
+
+            return user.get();
+        } catch (SQLException exception) {
+            throw new RuntimeException("Error verifying token", exception);
+        }
+    }
+
+    private String newToken(String username) {
+        return username + "-mrpToken";
+    }
+}
