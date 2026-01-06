@@ -12,10 +12,10 @@ public class Media {
     private int releaseYear;
     private int ageRestriction;
     private List<String> genres = new ArrayList<>();
-    private double averageScore;
+    private float averageScore;
     private List<Rating> ratings = new ArrayList<>();
 
-    public Media(int mediaID, int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+    public Media(int mediaID, int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres, float averageScore) {
         this.mediaID = mediaID;
         this.creatorUserId = creatorUserId;
         this.title = title;
@@ -24,10 +24,10 @@ public class Media {
         this.releaseYear = releaseYear;
         this.ageRestriction = ageRestriction;
         this.genres = genres;
-        this.averageScore = 0.0;
+        this.averageScore = averageScore;
     }
 
-    public Media(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres) {
+    public Media(int creatorUserId, String title, String description, String mediaType, int releaseYear, int ageRestriction, List<String> genres, float averageScore) {
         this.creatorUserId = creatorUserId;
         this.title = title;
         this.description = description;
@@ -35,7 +35,7 @@ public class Media {
         this.releaseYear = releaseYear;
         this.ageRestriction = ageRestriction;
         this.genres = genres;
-        this.averageScore = 0.0;
+        this.averageScore = averageScore;
     }
 
     public int getMediaID() {

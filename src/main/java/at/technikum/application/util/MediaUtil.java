@@ -42,8 +42,9 @@ public class MediaUtil {
         int releaseYear = resultSet.getInt("release_year");
         int ageRestriction = resultSet.getInt("age_restriction");
         List<String> genres = turnGenresStringToList(resultSet.getString("genres"));
+        float avg = resultSet.getFloat("average_rating");
 
-        return new Media(mediaID, creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
+        return new Media(mediaID, creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres, avg);
     }
 
     private static List<String> turnGenresStringToList(String genresString){

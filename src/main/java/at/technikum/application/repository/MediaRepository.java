@@ -22,7 +22,7 @@ public class MediaRepository {
 
     public Optional<List<Media>> getMedias(Map<String, ?> filters) throws SQLException {
         StringBuilder statement = new StringBuilder(
-                "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres from media"
+                "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres, average_rating from media"
         );
 
         List<String> conditions = new ArrayList<>();
@@ -85,7 +85,7 @@ public class MediaRepository {
     }
 
     public Optional<Media> getMediaById(int mediaId) throws SQLException {
-        String statement = "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres from media where media_id = ?";
+        String statement = "select media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres, average_rating from media where media_id = ?";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, mediaId);
@@ -98,7 +98,7 @@ public class MediaRepository {
     }
 
     public Optional<Media> createMedia(Media media) throws SQLException {
-        String statement = "insert into media (creator_user_id, title, description, media_type, release_year, age_restriction, genres) values (?, ?, ?, ?, ?, ?, ?) returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
+        String statement = "insert into media (creator_user_id, title, description, media_type, release_year, age_restriction, genres) values (?, ?, ?, ?, ?, ?, ?) returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres, average_rating";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, media.getCreatorUserId());
@@ -128,7 +128,7 @@ public class MediaRepository {
     }
 
     public Optional<Media> updateMedia(Media media) throws SQLException {
-        String statement = "update media set title = ?, description = ?, media_type = ?, release_year = ?, age_restriction = ?, genres = ? where media_id = ? returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres";
+        String statement = "update media set title = ?, description = ?, media_type = ?, release_year = ?, age_restriction = ?, genres = ? where media_id = ? returning media_id, creator_user_id, title, description, media_type, release_year, age_restriction, genres, average_rating";
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setString(1, media.getTitle());
