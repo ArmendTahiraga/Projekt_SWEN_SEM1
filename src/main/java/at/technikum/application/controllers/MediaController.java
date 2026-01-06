@@ -6,6 +6,7 @@ import at.technikum.application.exceptions.UnauthorizedException;
 import at.technikum.application.models.Media;
 import at.technikum.application.models.User;
 import at.technikum.application.services.MediaService;
+import at.technikum.application.util.MediaUtil;
 import at.technikum.server.Request;
 import at.technikum.server.Response;
 import at.technikum.server.Status;
@@ -60,7 +61,7 @@ public class MediaController extends Controller {
 
             JsonArray mediaArray = new JsonArray();
             for (Media media : medias) {
-                mediaArray.add(mediaToJson(media));
+                mediaArray.add(MediaUtil.mediaToJson(media));
             }
 
             response.add("medias", mediaArray);
@@ -101,7 +102,7 @@ public class MediaController extends Controller {
 
             Media createdMedia = mediaService.createMedia(principal.getUserID(), title, description, mediaType, releaseYear, ageRestriction, genres);
 
-            JsonObject response = mediaToJson(createdMedia);
+            JsonObject response = MediaUtil.mediaToJson(createdMedia);
             response.addProperty("message", "Media created successfully");
 
             return json(Status.CREATED, response.toString());
@@ -141,7 +142,7 @@ public class MediaController extends Controller {
 
             Media media = mediaService.getMediaById(mediaID);
 
-            JsonObject response = mediaToJson(media);
+            JsonObject response = MediaUtil.mediaToJson(media);
             response.addProperty("message", "Media fetched successfully");
 
             return json(Status.OK, response.toString());
@@ -182,35 +183,12 @@ public class MediaController extends Controller {
 
             Media createdMedia = mediaService.updateMedia(mediaID, title, description, mediaType, releaseYear, ageRestriction, genres);
 
-            JsonObject response = mediaToJson(createdMedia);
+            JsonObject response = MediaUtil.mediaToJson(createdMedia);
             response.addProperty("message", "Media updated successfully");
 
             return json(Status.OK, response.toString());
         } catch (Exception exception){
             return ExceptionMapper.toResponse(new BadRequestException("Failed to update media: " + exception.getMessage()));
         }
-    }
-
-    private JsonObject mediaToJson(Media media) {
-        JsonObject json = new JsonObject();
-        json.addProperty("mediaID", media.getMediaID());
-        json.addProperty("creatorUserId", media.getCreatorUserId());
-        json.addProperty("title", media.getTitle());
-        json.addProperty("description", media.getDescription());
-        json.addProperty("mediaType", media.getMediaType());
-        json.addProperty("releaseYear", media.getReleaseYear());
-        json.addProperty("ageRestriction", media.getAgeRestriction());
-
-        if (media.getGenres() != null) {
-            JsonArray genresArray = new JsonArray();
-            for (String genre : media.getGenres()) {
-                genresArray.add(genre);
-            }
-            json.add("genres", genresArray);
-        } else {
-            json.add("genres", new JsonArray());
-        }
-
-        return json;
     }
 }

@@ -3,6 +3,8 @@ package at.technikum.application.repository;
 import at.technikum.application.database.Database;
 import at.technikum.application.models.Media;
 import at.technikum.application.models.User;
+import at.technikum.application.util.MediaUtil;
+import at.technikum.application.util.UserUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class UserRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(UserUtil.mapUser(resultSet)) : Optional.empty();
         } catch (SQLException exception) {
             throw new SQLException("Error finding user by ID", exception);
         }
@@ -34,7 +36,7 @@ public class UserRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(statement);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(UserUtil.mapUser(resultSet)) : Optional.empty();
         } catch (SQLException exception) {
             throw new SQLException(exception);
         }
@@ -54,7 +56,7 @@ public class UserRepository {
                 throw new SQLException("User insert failed");
             }
 
-            return mapUser(resultSet);
+            return UserUtil.mapUser(resultSet);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
             throw new SQLException("Error creating user", exception);
@@ -71,7 +73,7 @@ public class UserRepository {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            return resultSet.next() ? Optional.of(mapUser(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(UserUtil.mapUser(resultSet)) : Optional.empty();
         } catch (SQLException exception) {
             throw new SQLException("Error updating user", exception);
         }
@@ -84,7 +86,7 @@ public class UserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<User> leaderboard = new ArrayList<>();
             while (resultSet.next()) {
-                leaderboard.add(mapUser(resultSet));
+                leaderboard.add(UserUtil.mapUser(resultSet));
             }
 
             return leaderboard.isEmpty() ? Optional.empty() : Optional.of(leaderboard);
@@ -115,7 +117,7 @@ public class UserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Media> recommendations = new ArrayList<>();
             while (resultSet.next()) {
-                recommendations.add(mapMedia(resultSet));
+                recommendations.add(MediaUtil.mapMedia(resultSet));
             }
 
             return recommendations.isEmpty() ? Optional.empty() : Optional.of(recommendations);
@@ -146,7 +148,7 @@ public class UserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Media> recommendations = new ArrayList<>();
             while (resultSet.next()) {
-                recommendations.add(mapMedia(resultSet));
+                recommendations.add(MediaUtil.mapMedia(resultSet));
             }
 
             return recommendations.isEmpty() ? Optional.empty() : Optional.of(recommendations);
@@ -154,47 +156,5 @@ public class UserRepository {
             System.out.println(exception.getMessage());
             throw new SQLException("Error getting recommendation", exception);
         }
-    }
-
-
-    private User mapUser(ResultSet resultSet) throws SQLException {
-        User user = new User(
-                resultSet.getInt("user_id"),
-                resultSet.getString("username"),
-                resultSet.getString("password_hash"),
-                resultSet.getString("email"),
-                resultSet.getString("favorite_genre")
-        );
-
-        return user;
-    }
-
-    private Media mapMedia(ResultSet resultSet) throws SQLException {
-        int mediaId = resultSet.getInt("media_id");
-        int creatorUserId = resultSet.getInt("creator_user_id");
-        String title = resultSet.getString("title");
-        String description = resultSet.getString("description");
-        String mediaType = resultSet.getString("media_type");
-        int releaseYear = resultSet.getInt("release_year");
-        int ageRestriction = resultSet.getInt("age_restriction");
-        List<String> genres = turnGenresStringToList(resultSet.getString("genres"));
-
-        return new Media(mediaId, creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
-    }
-
-    private List<String> turnGenresStringToList(String genresString){
-        List<String> genres = new ArrayList<>();
-
-        if (genresString == null || genresString.equals("[]")) {
-            return genres;
-        }
-
-        genresString = genresString.substring(1, genresString.length() - 1);
-        String[] genresArray = genresString.split(", ");
-        for (String genre : genresArray) {
-            genres.add(genre);
-        }
-
-        return genres;
     }
 }

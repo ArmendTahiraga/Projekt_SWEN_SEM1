@@ -2,6 +2,7 @@ package at.technikum.application.repository;
 
 import at.technikum.application.database.Database;
 import at.technikum.application.models.Rating;
+import at.technikum.application.util.RatingUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,25 +103,12 @@ public class RatingRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Rating> ratings = new ArrayList<>();
             while (resultSet.next()) {
-                ratings.add(mapRating(resultSet));
+                ratings.add(RatingUtil.mapRating(resultSet));
             }
 
             return ratings.isEmpty() ? Optional.empty() : Optional.of(ratings);
         } catch (Exception exception){
             throw new SQLException("Error fetching user ratings", exception);
         }
-    }
-
-    private Rating mapRating(ResultSet resultSet) throws SQLException {
-        int ratingId = resultSet.getInt("rating_id");
-        int userId = resultSet.getInt("user_id");
-        int mediaId = resultSet.getInt("media_id");
-        int stars = resultSet.getInt("stars");
-        String timestamp = resultSet.getString("timestamp");
-        String comment = resultSet.getString("comment");
-        int likes = resultSet.getInt("likes");
-        boolean confirmed = resultSet.getBoolean("confirmed");
-
-        return new Rating(ratingId, mediaId, userId, stars, comment, timestamp, likes, confirmed);
     }
 }

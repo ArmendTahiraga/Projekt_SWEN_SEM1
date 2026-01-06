@@ -6,6 +6,7 @@ import at.technikum.application.exceptions.UnauthorizedException;
 import at.technikum.application.models.Rating;
 import at.technikum.application.models.User;
 import at.technikum.application.services.RatingService;
+import at.technikum.application.util.RatingUtil;
 import at.technikum.server.Request;
 import at.technikum.server.Response;
 import at.technikum.server.Status;
@@ -184,7 +185,7 @@ public class RatingController extends Controller {
 
             JsonArray ratingArray = new JsonArray();
             for (Rating rating : ratings) {
-                ratingArray.add(ratingToJson(rating));
+                ratingArray.add(RatingUtil.ratingToJson(rating));
             }
             response.add("ratings", ratingArray);
 
@@ -192,19 +193,5 @@ public class RatingController extends Controller {
         } catch (Exception exception){
             return ExceptionMapper.toResponse(new BadRequestException("Failed to get user rating history: " + exception.getMessage()));
         }
-    }
-
-    private JsonObject ratingToJson(Rating rating){
-        JsonObject json = new JsonObject();
-        json.addProperty("ratingID", rating.getRatingID());
-        json.addProperty("mediaID", rating.getMediaID());
-        json.addProperty("userID", rating.getUserID());
-        json.addProperty("stars", rating.getStars());
-        json.addProperty("comment", rating.getComment());
-        json.addProperty("timestamp", rating.getTimestamp());
-        json.addProperty("confirmed", rating.isConfirmed());
-        json.addProperty("likes", rating.getLikes());
-
-        return json;
     }
 }

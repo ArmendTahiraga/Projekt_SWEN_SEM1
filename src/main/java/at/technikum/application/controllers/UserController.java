@@ -7,6 +7,8 @@ import at.technikum.application.exceptions.UnauthorizedException;
 import at.technikum.application.models.Media;
 import at.technikum.application.models.User;
 import at.technikum.application.services.UserService;
+import at.technikum.application.util.MediaUtil;
+import at.technikum.application.util.UserUtil;
 import at.technikum.server.Request;
 import at.technikum.server.Response;
 import at.technikum.server.Status;
@@ -114,7 +116,7 @@ public class UserController extends Controller {
 
             JsonArray mediaArray = new JsonArray();
             for (Media media : recommendations) {
-                mediaArray.add(mediaToJson(media));
+                mediaArray.add(MediaUtil.mediaToJson(media));
             }
             response.add("recommendations", mediaArray);
 
@@ -138,7 +140,7 @@ public class UserController extends Controller {
             JsonArray leaderboardArray = new JsonArray();
 
             for (User user : leaderboard){
-                leaderboardArray.add(turnUserToJson(user));
+                leaderboardArray.add(UserUtil.turnUserToJson(user));
             }
 
             response.add("leaderboard", leaderboardArray);
@@ -147,38 +149,5 @@ public class UserController extends Controller {
         } catch (Exception exception) {
             return ExceptionMapper.toResponse(new DatabaseException("Failed get user profile: " + exception.getMessage()));
         }
-    }
-
-    private JsonObject turnUserToJson(User user){
-        JsonObject userJson = new JsonObject();
-        userJson.addProperty("id", user.getUserID());
-        userJson.addProperty("username", user.getUsername());
-        userJson.addProperty("email", user.getEmail());
-        userJson.addProperty("favoriteGenre", user.getFavoriteGenre());
-
-        return userJson;
-    }
-
-    private JsonObject mediaToJson(Media media) {
-        JsonObject json = new JsonObject();
-        json.addProperty("mediaID", media.getMediaID());
-        json.addProperty("creatorUserId", media.getCreatorUserId());
-        json.addProperty("title", media.getTitle());
-        json.addProperty("description", media.getDescription());
-        json.addProperty("mediaType", media.getMediaType());
-        json.addProperty("releaseYear", media.getReleaseYear());
-        json.addProperty("ageRestriction", media.getAgeRestriction());
-
-        if (media.getGenres() != null) {
-            JsonArray genresArray = new JsonArray();
-            for (String genre : media.getGenres()) {
-                genresArray.add(genre);
-            }
-            json.add("genres", genresArray);
-        } else {
-            json.add("genres", new JsonArray());
-        }
-
-        return json;
     }
 }

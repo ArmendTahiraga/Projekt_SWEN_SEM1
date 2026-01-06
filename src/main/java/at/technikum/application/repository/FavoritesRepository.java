@@ -2,6 +2,7 @@ package at.technikum.application.repository;
 
 import at.technikum.application.database.Database;
 import at.technikum.application.models.Media;
+import at.technikum.application.util.MediaUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +28,7 @@ public class FavoritesRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Media> favoriteMedias = new ArrayList<>();
             while (resultSet.next()) {
-                favoriteMedias.add(mapMedia(resultSet));
+                favoriteMedias.add(MediaUtil.mapMedia(resultSet));
             }
 
             return favoriteMedias.isEmpty() ? Optional.empty() : Optional.of(favoriteMedias);
@@ -62,34 +63,5 @@ public class FavoritesRepository {
         } catch (Exception exception){
             return false;
         }
-    }
-
-    private Media mapMedia(ResultSet resultSet) throws SQLException {
-        int mediaID = resultSet.getInt("media_id");
-        int creatorUserId = resultSet.getInt("creator_user_id");
-        String title = resultSet.getString("title");
-        String description = resultSet.getString("description");
-        String mediaType = resultSet.getString("media_type");
-        int releaseYear = resultSet.getInt("release_year");
-        int ageRestriction = resultSet.getInt("age_restriction");
-        List<String> genres = turnGenresStringToList(resultSet.getString("genres"));
-
-        return new Media(mediaID, creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
-    }
-
-    private List<String> turnGenresStringToList(String genresString){
-        List<String> genres = new ArrayList<>();
-
-        if (genresString == null || genresString.equals("[]")) {
-            return genres;
-        }
-
-        genresString = genresString.substring(1, genresString.length() - 1);
-        String[] genresArray = genresString.split(", ");
-        for (String genre : genresArray) {
-            genres.add(genre);
-        }
-
-        return genres;
     }
 }

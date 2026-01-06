@@ -2,6 +2,7 @@ package at.technikum.application.repository;
 
 import at.technikum.application.database.Database;
 import at.technikum.application.models.Media;
+import at.technikum.application.util.MediaUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -73,7 +74,7 @@ public class MediaRepository {
 
             List<Media> medias = new ArrayList<>();
             while (resultSet.next()) {
-                medias.add(mapMedia(resultSet));
+                medias.add(MediaUtil.mapMedia(resultSet));
             }
 
             return medias.isEmpty() ? Optional.empty() : Optional.of(medias);
@@ -90,7 +91,7 @@ public class MediaRepository {
             preparedStatement.setInt(1, mediaId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(MediaUtil.mapMedia(resultSet)) : Optional.empty();
         } catch (SQLException exception){
             throw new SQLException("Error getting media by ID", exception);
         }
@@ -109,7 +110,7 @@ public class MediaRepository {
             preparedStatement.setString(7, media.getGenres().toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(MediaUtil.mapMedia(resultSet)) : Optional.empty();
         } catch (SQLException exception){
             throw new SQLException("Error creating media", exception);
         }
@@ -139,38 +140,9 @@ public class MediaRepository {
             preparedStatement.setInt(7, media.getMediaID());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next() ? Optional.of(mapMedia(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.of(MediaUtil.mapMedia(resultSet)) : Optional.empty();
         } catch (SQLException exception){
             throw new SQLException("Error updating media", exception);
         }
-    }
-
-    private Media mapMedia(ResultSet resultSet) throws SQLException {
-        int mediaId = resultSet.getInt("media_id");
-        int creatorUserId = resultSet.getInt("creator_user_id");
-        String title = resultSet.getString("title");
-        String description = resultSet.getString("description");
-        String mediaType = resultSet.getString("media_type");
-        int releaseYear = resultSet.getInt("release_year");
-        int ageRestriction = resultSet.getInt("age_restriction");
-        List<String> genres = turnGenresStringToList(resultSet.getString("genres"));
-
-        return new Media(mediaId, creatorUserId, title, description, mediaType, releaseYear, ageRestriction, genres);
-    }
-
-    private List<String> turnGenresStringToList(String genresString){
-        List<String> genres = new ArrayList<>();
-
-        if (genresString == null || genresString.equals("[]")) {
-            return genres;
-        }
-
-        genresString = genresString.substring(1, genresString.length() - 1);
-        String[] genresArray = genresString.split(", ");
-        for (String genre : genresArray) {
-            genres.add(genre);
-        }
-
-        return genres;
     }
 }

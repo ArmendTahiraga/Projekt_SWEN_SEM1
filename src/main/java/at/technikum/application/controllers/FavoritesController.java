@@ -7,6 +7,7 @@ import at.technikum.application.exceptions.UnauthorizedException;
 import at.technikum.application.models.Media;
 import at.technikum.application.models.User;
 import at.technikum.application.services.FavoritesService;
+import at.technikum.application.util.MediaUtil;
 import at.technikum.server.Request;
 import at.technikum.server.Response;
 import at.technikum.server.Status;
@@ -38,7 +39,7 @@ public class FavoritesController extends Controller {
 
             JsonArray favoritesMediaArray = new JsonArray();
             for (Media media : favoriteMedias) {
-                favoritesMediaArray.add(mediaToJson(media));
+                favoritesMediaArray.add(MediaUtil.mediaToJson(media));
             }
 
             response.add("favorites", favoritesMediaArray);
@@ -95,28 +96,5 @@ public class FavoritesController extends Controller {
         } catch (Exception exception){
             return ExceptionMapper.toResponse((new BadRequestException("Failed to unmark media from favorites: " + exception.getMessage())));
         }
-    }
-
-    private JsonObject mediaToJson(Media media) {
-        JsonObject json = new JsonObject();
-        json.addProperty("mediaID", media.getMediaID());
-        json.addProperty("creatorUserId", media.getCreatorUserId());
-        json.addProperty("title", media.getTitle());
-        json.addProperty("description", media.getDescription());
-        json.addProperty("mediaType", media.getMediaType());
-        json.addProperty("releaseYear", media.getReleaseYear());
-        json.addProperty("ageRestriction", media.getAgeRestriction());
-
-        if (media.getGenres() != null) {
-            JsonArray genresArray = new JsonArray();
-            for (String genre : media.getGenres()) {
-                genresArray.add(genre);
-            }
-            json.add("genres", genresArray);
-        } else {
-            json.add("genres", new JsonArray());
-        }
-
-        return json;
     }
 }
